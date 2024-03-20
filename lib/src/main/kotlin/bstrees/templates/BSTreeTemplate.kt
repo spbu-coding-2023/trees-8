@@ -1,5 +1,7 @@
 package bstrees.templates
 
+import java.util.Stack
+
 abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> {
     var root: Vertex_t? = null
     var size: Int = 0
@@ -10,9 +12,14 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         }
 
     /**
+     * Associates the specified value with the specified key in the tree.
+     */
+    public abstract operator fun set(key: K, value: V)
+
+    /**
      * Returns the value corresponding to the given key, or null if such a key is not present in the tree.
      */
-    operator fun get(key: K): V? {
+    public operator fun get(key: K): V? {
         var cur = root
         while (cur != null) {
             val result = cur.key.compareTo(key)
@@ -32,10 +39,6 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         return get(key) ?: defaultValue
     }
 
-    /**
-     * Associates the specified value with the specified key in the tree.
-     */
-    public abstract operator fun set(key: K, value: V)
 
     /**
      * Removes the entry for the specified key only if it is mapped with some value.
@@ -43,51 +46,67 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
      */
     public abstract fun remove(key: K): V?
 
-    public fun clear() {
-        size = 0
-        root = null
+    public operator fun iterator(): TreeIterator {
+        return TreeIterator()
     }
 
-    enum class Traversal {
-        INORDER,
-        PREORDER,
-        POSTORDER
+    inner class TreeIterator : Iterator<Pair<K, V>> {
+        var cur = root
+        val stack = Stack<Vertex_t>()
+        override fun next(): Pair<K, V> {
+            while (hasNext()) {
+                if (cur != null) {
+                    cur?.let {
+                        stack.push(it)
+                        cur = it.left
+                    }
+                } else {
+                    val returnVert = stack.pop()
+                    cur = returnVert.right
+                    return returnVert.toPair()
+                }
+            }
+            throw IndexOutOfBoundsException()
+        }
+
+        override fun hasNext(): Boolean {
+            return stack.isNotEmpty() or (cur != null)
+        }
     }
 
     /**
-     * Returns a [MutableList] of all values in this tree.
+     * Returns Pair<K,V> by minimum key in the tree. If tree is empty then returns null
      */
-    fun values(order: Traversal): List<V> {
-        var result: MutableList<V> = mutableListOf()
-        traverse(order, root, result)
-        return result
+    public fun min(): Pair<K, V>? {
+        return minVertex(root)?.toPair()
     }
 
-
-    private fun traverse(order: Traversal, vertex: Vertex_t?, result: MutableList<V>) {
-        if (vertex == null) {
-            return
+    protected fun minVertex(vertex: Vertex_t?): Vertex_t? {
+        var cur = vertex
+        while (cur?.left != null) {
+            cur = cur.left
         }
-        when (order) {
-            Traversal.INORDER -> {
-                traverse(order, vertex.left, result)
-                result.add(vertex.value)
-                traverse(order, vertex.right, result)
-            }
+        return cur
+    }
 
-            Traversal.PREORDER -> {
-                result.add(vertex.value)
-                traverse(order, vertex.left, result)
-                traverse(order, vertex.right, result)
-            }
+    /**
+     * Returns Pair<K,V> by maximum key in the tree. If tree is empty then returns null
+     */
+    public fun max(): Pair<K, V>? {
+        return maxVert(root)?.toPair()
+    }
 
-            Traversal.POSTORDER -> {
-                traverse(order, vertex.left, result)
-                traverse(order, vertex.right, result)
-                result.add(vertex.value)
-            }
+    protected fun maxVert(vertex: Vertex_t?): Vertex_t? {
+        var cur = vertex
+        while (cur?.right != null) {
+            cur = cur.right
         }
-        return
+        return cur
+    }
+
+    fun clear() {
+        size = 0
+        root = null
     }
 
 }
