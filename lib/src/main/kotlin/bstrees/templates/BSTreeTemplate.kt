@@ -1,11 +1,12 @@
 package bstrees.templates
 
 import java.util.Stack
+import javax.swing.text.StyledEditorKit.BoldAction
 
 abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> {
     var root: Vertex_t? = null
     var size: Int = 0
-        private set(value) {
+        protected set(value) {
             if (value >= 0) {
                 field = value
             } else throw IllegalArgumentException("Tree size cannot be a negative number")
@@ -20,13 +21,14 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
 
     /**
      * Associates the specified value with the specified key if this key is not in the tree.
-     * Returns: specified value if this key is not the tree, otherwise null
+     * @return [true] if this key is not in the tree, otherwise [false]
      */
-    public fun setIfAbsent(key: K, value: V): V? {
+    public fun setIfAbsent(key: K, value: V): Boolean {
         if (get(key) == null) {
-            return set(key, value)
+            set(key, value)
+            return true
         }
-        return null
+        return false
     }
 
     /**
@@ -103,7 +105,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         return minVertex(root)?.toPair()
     }
 
-    protected fun minVertex(vertex: Vertex_t?): Vertex_t? {
+    private fun minVertex(vertex: Vertex_t?): Vertex_t? {
         var cur = vertex
         while (cur?.left != null) {
             cur = cur.left
@@ -118,7 +120,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         return maxVert(root)?.toPair()
     }
 
-    protected fun maxVert(vertex: Vertex_t?): Vertex_t? {
+    private fun maxVert(vertex: Vertex_t?): Vertex_t? {
         var cur = vertex
         while (cur?.right != null) {
             cur = cur.right
@@ -138,7 +140,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         return get(key) != null
     }
 
-    fun clear() {
+    public fun clear() {
         size = 0
         root = null
     }
