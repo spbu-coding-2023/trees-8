@@ -12,12 +12,25 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         }
 
     /**
-     * Associates the specified value with the specified key in the tree.
+     * Associates the specified [value] with the specified [key] in the tree.
+     *
+     * @return the previous value associated with the key, or `null` if the key was not present in the tree.
      */
-    public abstract operator fun set(key: K, value: V)
+    public abstract operator fun set(key: K, value: V): V?
 
     /**
-     * Returns the value corresponding to the given key, or null if such a key is not present in the tree.
+     * Associates the specified value with the specified key if this key is not in the tree.
+     * Returns: specified value if this key is not the tree, otherwise null
+     */
+    public fun setIfAbsent(key: K, value: V): V? {
+        if (get(key) == null) {
+            return set(key, value)
+        }
+        return null
+    }
+
+    /**
+     * Returns the value corresponding to the given [key], or `null` if such a key is not present in the tree.
      */
     public operator fun get(key: K): V? {
         var cur = root
@@ -33,16 +46,25 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
     }
 
     /**
-     * Returns the value corresponding to the given key, or defaultValue if such a key is not present in the tree.
+     * Returns the value corresponding to the given [key], or [defaultValue] if such a key is not present in the map.
      */
     public fun getOrDefault(key: K, defaultValue: Any): Any {
         return get(key) ?: defaultValue
     }
 
+    /**
+     * Returns the value for the given [key] if the value is present and not `null`.
+     * Otherwise, calls the [set] function,
+     * set [defaultValue] into the tree under the given key and returns the call result.
+     */
+    public fun getOrSet(key: K, defaultValue: V): V? {
+        return get(key) ?: set(key, defaultValue)
+    }
 
     /**
-     * Removes the entry for the specified key only if it is mapped with some value.
-     * Returns: removed value if key was mapped with it, otherwise null
+     * Removes the specified key and its corresponding value from the tree.
+     *
+     * @return the previous value associated with the key, or `null` if the key was not present in the map.
      */
     public abstract fun remove(key: K): V?
 
@@ -102,6 +124,18 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
             cur = cur.right
         }
         return cur
+    }
+
+    public fun isEmpty(): Boolean {
+        return size == 0
+    }
+
+    public fun isNotEmpty(): Boolean {
+        return size != 0
+    }
+
+    public fun containsKey(key: K): Boolean {
+        return get(key) != null
     }
 
     fun clear() {

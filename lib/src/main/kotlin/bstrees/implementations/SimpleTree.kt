@@ -8,7 +8,8 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
         return null
     }
 
-    override operator fun set(key: K, value: V) {
+    override operator fun set(key: K, value: V): V? {
         // set implemenation
+        return null
     }
 }
