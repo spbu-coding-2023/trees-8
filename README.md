@@ -28,10 +28,22 @@ Three trees are implemented in this library: [R&B](https://en.wikipedia.org/wiki
 Three trees are implemented, choose which one you want.
 Standard methods are implemented in each tree:
 
-+ `insert()` - Inserting a tree node by key and value
-+ `remove()` - Deleting a tree node by key
-+ `find()` -  Searching by key
-+ `traverse()` - Traversing the tree depending on the selected path search
++ `set(key,value)` - Associates the specified value with the specified key in the tree.
++ `remove(key)` - Removes the specified key and its corresponding value from the tree.
++ `get(key)` -  Returns the value corresponding to the given key
++ `iterator()` - Iteration by key-value pairs in order of keys
+
+There are also many other methods:
+
++ `setIfAbsent(key,value)`
++ `getOrDefault(key, defaultValue)`
++ `getOrSet(key,defaultValue)`
++ `min()`
++ `max()`
++ `isEmpty()`
++ `isNotEmpty()`
++ `containsKey(key)`
++ `clear()`
 
 AVL and R&B trees are self-balancing
 
