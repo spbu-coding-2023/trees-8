@@ -9,11 +9,11 @@ Team #8's project on binary trees.
 
 ## About
 
-Three trees are implemented in this library: [R&B](https://en.wikipedia.org/wiki/Red–black_tree), [AVL](https://en.wikipedia.org/wiki/AVL_tree) and [Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree).
+Three trees are implemented in this library: [Red-Black](https://en.wikipedia.org/wiki/Red–black_tree), [AVL](https://en.wikipedia.org/wiki/AVL_tree) and [Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree).
 
 ## Authors
 
-- [Aleksey Dmitrievtsev](https://github.com/admitrievtsev) - Red&Black Tree
+- [Aleksey Dmitrievtsev](https://github.com/admitrievtsev) - Red-Black Tree
 - [Gleb Nasretdinov](https://github.com/Ycyken) - AVL Tree
 - [Azamat Ishbaev](https://github.com/odiumuniverse) - Binary Search Tree
 
@@ -33,7 +33,7 @@ Standard methods are implemented in each tree:
 + `get(key)` -  Returns the value corresponding to the given key
 + `iterator()` - Iteration by key-value pairs in order of keys
 
-There are also many other methods:
+There are also many others methods:
 
 + `setIfAbsent(key,value)`
 + `getOrDefault(key, defaultValue)`
@@ -45,7 +45,7 @@ There are also many other methods:
 + `containsKey(key)`
 + `clear()`
 
-AVL and R&B trees are self-balancing
+AVL and Red-Black trees are self-balancing
 
 ### Suggestions and wishes
 
