@@ -20,7 +20,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
 
         var cur = root ?: throw IllegalStateException("Case when root is null is processed above")
         while (true) {
-            val result = cur.key.compareTo(key)
+            val result = key.compareTo(cur.key)
             if (result < 0) {
                 if (cur.left == null) {
                     val newVertex = AVLVertex(key, value)
@@ -51,6 +51,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         var cur = vertex
         var prevKey = cur.key
         while (cur.parent != null) {
+            prevKey = cur.key
             cur = cur.parent ?: throw IllegalStateException("Parent can't be null due to while condition")
             if (prevKey == cur.left?.key) {
                 cur.diffHeight += 1
@@ -97,9 +98,8 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
 
         origin.parent = left
         origin.left = left.right
-
         origin.left?.parent = origin
-        left.right?.parent = origin
+        left.right = origin
 
         if (left.diffHeight == 0) {
             origin.diffHeight = 1
@@ -107,6 +107,9 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         } else if (left.diffHeight == 1) {
             origin.diffHeight = 0
             left.diffHeight = 0
+        }
+        if (origin == root) {
+            root = left
         }
         return left
     }
@@ -120,10 +123,9 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         else origin.parent?.right = right
 
         origin.parent = right
-        origin.left = right.right
-
-        origin.left?.parent = origin
-        right.right?.parent = origin
+        origin.right = right.left
+        origin.right?.parent = origin
+        right.left = origin
 
         if (right.diffHeight == 0) {
             origin.diffHeight = -1
@@ -131,6 +133,9 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         } else if (right.diffHeight == -1) {
             origin.diffHeight = 0
             right.diffHeight = 0
+        }
+        if (origin == root) {
+            root = right
         }
         return right
     }

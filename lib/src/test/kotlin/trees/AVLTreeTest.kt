@@ -31,7 +31,7 @@ class AVLTreeTest {
     }
 
     @Test
-    fun `size of avl tree with duplicate key`() {
+    fun `size of avl tree with duplicate keys`() {
         for (i in 1..10) {
             avlTree.set(i, 30 + i)
         }
