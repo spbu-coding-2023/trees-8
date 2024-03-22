@@ -4,9 +4,9 @@ import bstrees.templates.BalanceBSTreeTemplate
 
 class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
 
-    public override fun set(key: K, value: V): V? {
+    public override operator fun set(key: K, value: V): V? {
         val (currentVert, returnResult) = setWithoutBalance(key, value)
-        balance(currentVert)
+        balanceAfterSet(currentVert)
         return returnResult
     }
 
@@ -47,7 +47,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         }
     }
 
-    private fun balance(vertex: AVLVertex<K, V>) {
+    private fun balanceAfterSet(vertex: AVLVertex<K, V>) {
         var cur = vertex
         var prevKey = cur.key
         while (cur.parent != null) {
@@ -59,33 +59,66 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 cur.diffHeight -= 1
             }
 
-            if (cur.diffHeight == 2) {
-                if (getDiffHeight(cur.left) >= 0) {
-                    cur = rotateRight(cur)
-                } else if (getDiffHeight(cur.left) == -1) {
-                    cur.left?.let {
-                        cur = rotateLeft(it)
-                        cur = rotateRight(cur)
-                    }
-                }
-
-            } else if (cur.diffHeight == -2) {
-                if (getDiffHeight(cur.right) <= 0) {
-                    cur = rotateLeft(cur)
-                } else if (getDiffHeight(cur.right) == 1) {
-                    cur.right?.let {
-                        cur = rotateRight(cur)
-                        cur = rotateLeft(cur)
-                    }
-                }
-            }
-
+            cur = balanceOnce(cur)
             if (cur.diffHeight == 0) break
         }
     }
 
+    public override fun remove(key: K): V? {
+        var toRemove = VertByKey(key)
+        var returnResult = toRemove?.value
+        var toBalance: AVLVertex<K, V>? = null
+        if (toRemove == null) return null
+
+        if ((toRemove.left == null) and (toRemove.right == null)) {
+            toBalance = toRemove.parent
+            toRemove = null
+        } else if (toRemove.right == null) {
+            toRemove.left?.parent = toRemove.parent
+            toRemove = toRemove.left
+            toBalance = toRemove?.parent
+        } else {
+            var minRight = minVertex(toRemove.right)
+            if (toRemove.right == minRight) {
+            } else {
+                minRight?.parent?.left = null
+                minRight?.right = toRemove.right
+            }
+            minRight?.left = toRemove.left
+            minRight?.parent = toRemove.parent
+            toRemove = minRight
+            toBalance = toRemove?.parent
+        }
+        return TODO()
+    }
+
     private fun getDiffHeight(vertex: AVLVertex<K, V>?): Int {
         return vertex?.diffHeight ?: 0
+    }
+
+    private fun balanceOnce(vertex_: AVLVertex<K, V>): AVLVertex<K, V> {
+        var vertex = vertex_
+        if (vertex.diffHeight == 2) {
+            if (getDiffHeight(vertex.left) >= 0) {
+                vertex = rotateRight(vertex)
+            } else if (getDiffHeight(vertex.left) == -1) {
+                vertex.left?.let {
+                    vertex = rotateLeft(it)
+                    vertex = rotateRight(vertex)
+                }
+            }
+
+        } else if (vertex.diffHeight == -2) {
+            if (getDiffHeight(vertex.right) <= 0) {
+                vertex = rotateLeft(vertex)
+            } else if (getDiffHeight(vertex.right) == 1) {
+                vertex.right?.let {
+                    vertex = rotateRight(vertex)
+                    vertex = rotateLeft(vertex)
+                }
+            }
+        }
+        return vertex
     }
 
     private fun rotateRight(origin: AVLVertex<K, V>): AVLVertex<K, V> {
@@ -138,10 +171,5 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
             root = right
         }
         return right
-    }
-
-    public override fun remove(key: K): V? {
-
-        return TODO()
     }
 }
