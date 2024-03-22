@@ -1,5 +1,5 @@
 ![MegaLinter](https://github.com/spbu-coding-2023/trees-8/workflows/MegaLinter/badge.svg)
-![CITest](https://github.com/spbu-coding-2023/trees-8/actions/workflows/CI_Test.yml/badge.svg)
+![CI_Test](https://github.com/spbu-coding-2023/trees-8/actions/workflows/CI_Test.yml/badge.svg)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/spbu-coding-2023/trees-8/badge)](https://www.codefactor.io/repository/github/spbu-coding-2023/trees-8)
 
@@ -28,10 +28,22 @@ Three trees are implemented in this library: [R&B](https://en.wikipedia.org/wiki
 Three trees are implemented, choose which one you want.
 Standard methods are implemented in each tree:
 
-+ `insert()` - Inserting a tree node by key and value
-+ `remove()` - Deleting a tree node by key
-+ `find()` -  Searching by key
-+ `traverse()` - Traversing the tree depending on the selected path search
++ `set(key,value)` - Associates the specified value with the specified key in the tree.
++ `remove(key)` - Removes the specified key and its corresponding value from the tree.
++ `get(key)` -  Returns the value corresponding to the given key
++ `iterator()` - Iteration by key-value pairs in order of keys
+
+There are also many other methods:
+
++ `setIfAbsent(key,value)`
++ `getOrDefault(key, defaultValue)`
++ `getOrSet(key,defaultValue)`
++ `min()`
++ `max()`
++ `isEmpty()`
++ `isNotEmpty()`
++ `containsKey(key)`
++ `clear()`
 
 AVL and R&B trees are self-balancing
 
