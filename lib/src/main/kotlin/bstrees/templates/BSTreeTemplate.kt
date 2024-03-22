@@ -37,7 +37,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
     public operator fun get(key: K): V? {
         var cur = root
         while (cur != null) {
-            val result = cur.key.compareTo(key)
+            val result = key.compareTo(cur.key)
             when {
                 result < 0 -> cur = cur.left
                 result > 0 -> cur = cur.right

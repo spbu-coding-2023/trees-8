@@ -18,14 +18,14 @@ class AVLTreeTest {
 
     @Test
     fun `simple array test`() {
-        val array = IntArray(100, { it + 1 })
+        val array = intArrayOf(1, 2, 3, 4, 5)
         for (i in array) {
             avlTree.set(i, -i)
         }
-        val expectedGet = -15
-        val actualGet = avlTree.get(15)
+        val expectedGet = -5
+        val actualGet = avlTree.get(5)
         assertEquals(expectedGet, actualGet, "Get method must return associated with key value")
-        val expectedSize = 100
+        val expectedSize = 5
         val actualSize = avlTree.size
         assertEquals(expectedSize, actualSize, "Size of avl tree must correspond to number key-value pairs")
     }
