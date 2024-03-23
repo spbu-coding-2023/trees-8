@@ -10,6 +10,10 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         return oldValue
     }
 
+    /**
+     * Set specified value by specified key
+     * @return pair of set vertex and old value if it was
+     */
     private fun setWithoutBalance(key: K, value: V): Pair<AVLVertex<K, V>, V?> {
         if (root == null) {
             val newVertex = AVLVertex(key, value)
@@ -47,6 +51,10 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         }
     }
 
+    /**
+     * Climbing up the tree, updates diffHeights of vertices after set and calls
+     * [balanceOnce] if vertex became unbalanced
+     */
     private fun balanceAfterSet(vertex: AVLVertex<K, V>) {
         var cur = vertex
         var prevKey = cur.key
@@ -71,10 +79,12 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         return oldValue
     }
 
+    /**
+     * Removes specified vertex and balances the tree
+     */
     private fun removeVert(toRemove: AVLVertex<K, V>) {
         val parent = toRemove.parent
-        val toBalance = parent
-        if ((toRemove.left == null) and (toRemove.right == null)) {
+        if (toRemove.left == null && toRemove.right == null) {
             when {
                 parent == null -> root = null
 
@@ -89,7 +99,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 }
             }
             size -= 1
-            balanceAfterRemove(toBalance)
+            balanceAfterRemove(parent)
         } else if (toRemove.right == null) {
             toRemove.left?.let {
                 toRemove.key = it.key
@@ -98,7 +108,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 toRemove.diffHeight = 0
             }
             size -= 1
-            balanceAfterRemove(toBalance)
+            balanceAfterRemove(parent)
             when {
                 parent?.left == toRemove -> parent.diffHeight -= 1
                 parent?.right == toRemove -> parent.diffHeight += 1
@@ -112,6 +122,10 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         }
     }
 
+    /**
+     * Climbing up the tree, updates diffHeights of vertices after remove and calls
+     * [balanceOnce] if vertex became unbalanced
+     */
     private fun balanceAfterRemove(vertex: AVLVertex<K, V>?) {
         var cur = vertex ?: return
         while (cur.diffHeight != 0) {
@@ -129,8 +143,12 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         return vertex?.diffHeight ?: 0
     }
 
-    private fun balanceOnce(vertex_: AVLVertex<K, V>): AVLVertex<K, V> {
-        var vertex = vertex_
+    /**
+     * Balances subtree by specified root, updates diffHeights of vertices
+     * @return new root of subtree
+     */
+    private fun balanceOnce(_vertex: AVLVertex<K, V>): AVLVertex<K, V> {
+        var vertex = _vertex
         if (vertex.diffHeight == 2) {
             if (getDiffHeight(vertex.left) >= 0) {
                 vertex = rotateRight(vertex)
