@@ -24,10 +24,10 @@ class AVLTreeTest {
         }
         val expectedGet = -5
         val actualGet = avlTree.get(5)
-        assertEquals(expectedGet, actualGet, "Get method must return associated with key value")
+        assertEquals(expectedGet, actualGet, "Get method must return the value associated with the key")
         val expectedSize = 5
         val actualSize = avlTree.size
-        assertEquals(expectedSize, actualSize, "Size of avl tree must correspond to number key-value pairs")
+        assertEquals(expectedSize, actualSize, "Size the tree must correspond to the number key-value pairs")
     }
 
     @Test
@@ -43,7 +43,7 @@ class AVLTreeTest {
         val actualSize = avlTree.size
         assertEquals(
             expectedSize, actualSize,
-            "Size of avl tree must not change with overwriting an existing key"
+            "Size of the tree must not change after overwriting an existing key"
         )
     }
 
@@ -60,9 +60,39 @@ class AVLTreeTest {
         val actualSize = avlTree.size
         assertEquals(
             expectedSize, actualSize,
-            "Size of avl tree must not change with overwriting an existing key"
+            "Size of the tree must not change after overwriting an existing key"
         )
     }
 
+    @Test
+    fun `simple remove`() {
+        avlTree[0] = 5
 
+        val expectedResult = 5
+        val actualResult = avlTree.remove(0)
+        val expectedSize = 0
+        val actualSize = avlTree.size
+
+        assertEquals(
+            expectedResult, actualResult,
+            "Remove must return removed value"
+        )
+        assertEquals(
+            expectedSize, actualSize,
+            "Size tree must decrease after removing the existing key"
+        )
+    }
+
+    @Test
+    fun `remove a non-existent key`() {
+        avlTree[0] = 15
+        avlTree.remove(0)
+
+        val expectedResult = null
+        val actualResult = avlTree.remove(0)
+        assertEquals(
+            expectedResult, actualResult,
+            "Remove a non-existent key must return null"
+        )
+    }
 }

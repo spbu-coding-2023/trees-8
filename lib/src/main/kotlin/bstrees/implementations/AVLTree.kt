@@ -6,19 +6,23 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
 
     public override operator fun set(key: K, value: V): V? {
         val (currentVert, oldValue) = setWithoutBalance(key, value)
-        balanceAfterSet(currentVert)
+        if (oldValue == null) {
+            size += 1
+            balanceAfterSet(currentVert)
+        }
         return oldValue
     }
 
     /**
      * Set specified value by specified key
-     * @return pair of set vertex and old value if it was
+     *
+     * Returns: a pair of set vertex and old value.
+     * If key didn't exist, the returned value is null.
      */
     private fun setWithoutBalance(key: K, value: V): Pair<AVLVertex<K, V>, V?> {
         if (root == null) {
             val newVertex = AVLVertex(key, value)
             root = newVertex
-            size += 1
             return Pair(newVertex, null)
         }
 
@@ -30,7 +34,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     val newVertex = AVLVertex(key, value)
                     cur.left = newVertex
                     newVertex.parent = cur
-                    size += 1
                     return Pair(newVertex, null)
                 }
                 cur = cur.left ?: throw IllegalStateException("Case when cur.left is null is processed above")
@@ -39,7 +42,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     val newVertex = AVLVertex(key, value)
                     cur.right = newVertex
                     newVertex.parent = cur
-                    size += 1
                     return Pair(newVertex, null)
                 }
                 cur = cur.right ?: throw IllegalStateException("Case when cur.rightt is null is processed above")
@@ -76,6 +78,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         val toRemove = vertByKey(key) ?: return null
         val oldValue = toRemove.value
         removeVert(toRemove)
+        size -= 1
         return oldValue
     }
 
@@ -98,7 +101,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     parent.diffHeight += 1
                 }
             }
-            size -= 1
             balanceAfterRemove(parent)
         } else if (toRemove.right == null) {
             toRemove.left?.let {
@@ -107,7 +109,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 toRemove.left = null
                 toRemove.diffHeight = 0
             }
-            size -= 1
             balanceAfterRemove(parent)
             when {
                 parent?.left == toRemove -> parent.diffHeight -= 1
