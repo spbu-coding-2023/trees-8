@@ -5,9 +5,9 @@ import bstrees.templates.BalanceBSTreeTemplate
 class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
 
     public override operator fun set(key: K, value: V): V? {
-        val (currentVert, returnResult) = setWithoutBalance(key, value)
+        val (currentVert, oldValue) = setWithoutBalance(key, value)
         balanceAfterSet(currentVert)
-        return returnResult
+        return oldValue
     }
 
     private fun setWithoutBalance(key: K, value: V): Pair<AVLVertex<K, V>, V?> {
@@ -65,31 +65,64 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
     }
 
     public override fun remove(key: K): V? {
-        var toRemove = VertByKey(key)
-        var returnResult = toRemove?.value
-        var toBalance: AVLVertex<K, V>? = null
-        if (toRemove == null) return null
+        val toRemove = vertByKey(key) ?: return null
+        val oldValue = toRemove.value
+        removeVert(toRemove)
+        return oldValue
+    }
 
+    private fun removeVert(toRemove: AVLVertex<K, V>) {
+        val parent = toRemove.parent
+        val toBalance = parent
         if ((toRemove.left == null) and (toRemove.right == null)) {
-            toBalance = toRemove.parent
-            toRemove = null
-        } else if (toRemove.right == null) {
-            toRemove.left?.parent = toRemove.parent
-            toRemove = toRemove.left
-            toBalance = toRemove?.parent
-        } else {
-            var minRight = minVertex(toRemove.right)
-            if (toRemove.right == minRight) {
-            } else {
-                minRight?.parent?.left = null
-                minRight?.right = toRemove.right
+            when {
+                parent == null -> root = null
+
+                parent.left == toRemove -> {
+                    parent.left = null
+                    parent.diffHeight -= 1
+                }
+
+                parent.right == toRemove -> {
+                    parent.right = null
+                    parent.diffHeight += 1
+                }
             }
-            minRight?.left = toRemove.left
-            minRight?.parent = toRemove.parent
-            toRemove = minRight
-            toBalance = toRemove?.parent
+            size -= 1
+            balanceAfterRemove(toBalance)
+        } else if (toRemove.right == null) {
+            toRemove.left?.let {
+                toRemove.key = it.key
+                toRemove.value = it.value
+                toRemove.left = null
+                toRemove.diffHeight = 0
+            }
+            size -= 1
+            balanceAfterRemove(toBalance)
+            when {
+                parent?.left == toRemove -> parent.diffHeight -= 1
+                parent?.right == toRemove -> parent.diffHeight += 1
+            }
+        } else {
+            val minRight = minVertex(toRemove.right)
+                ?: throw IllegalStateException("min of subtree can't be null if it's contains at least one element")
+            toRemove.key = minRight.key
+            toRemove.value = minRight.value
+            removeVert(minRight)
         }
-        return TODO()
+    }
+
+    private fun balanceAfterRemove(vertex: AVLVertex<K, V>?) {
+        var cur = vertex ?: return
+        while (cur.diffHeight != 0) {
+            cur = balanceOnce(cur)
+            if (cur.diffHeight != 0) {
+                when {
+                    cur.parent?.left == cur -> cur.parent?.let { it.diffHeight -= 1 }
+                    cur.parent?.right == cur -> cur.parent?.let { it.diffHeight += 1 }
+                }
+            }
+        }
     }
 
     private fun getDiffHeight(vertex: AVLVertex<K, V>?): Int {
