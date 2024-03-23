@@ -65,7 +65,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
     }
 
     public override fun remove(key: K): V? {
-        var toRemove = VertByKey(key)
+        var toRemove = vertByKey(key)
         var returnResult = toRemove?.value
         var toBalance: AVLVertex<K, V>? = null
         if (toRemove == null) return null

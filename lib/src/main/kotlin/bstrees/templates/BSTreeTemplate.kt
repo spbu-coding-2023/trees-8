@@ -35,7 +35,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
      * Returns the value corresponding to the given [key], or `null` if such a key is not present in the tree.
      */
     public operator fun get(key: K): V? {
-        return VertByKey(key)?.value
+        return vertByKey(key)?.value
     }
 
     /**
@@ -119,7 +119,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         return cur
     }
 
-    protected fun VertByKey(key: K): Vertex_t? {
+    protected fun vertByKey(key: K): Vertex_t? {
         var cur = root
         while (cur != null) {
             if (key < cur.key) {
