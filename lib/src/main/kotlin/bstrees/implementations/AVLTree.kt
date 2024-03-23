@@ -5,16 +5,24 @@ import bstrees.templates.BalanceBSTreeTemplate
 class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
 
     public override operator fun set(key: K, value: V): V? {
-        val (currentVert, returnResult) = setWithoutBalance(key, value)
-        balanceAfterSet(currentVert)
-        return returnResult
+        val (currentVert, oldValue) = setWithoutBalance(key, value)
+        if (oldValue == null) {
+            size += 1
+            balanceAfterSet(currentVert)
+        }
+        return oldValue
     }
 
+    /**
+     * Set specified value by specified key
+     *
+     * Returns: a pair of set vertex and old value.
+     * If key didn't exist, the returned value is null.
+     */
     private fun setWithoutBalance(key: K, value: V): Pair<AVLVertex<K, V>, V?> {
         if (root == null) {
             val newVertex = AVLVertex(key, value)
             root = newVertex
-            size += 1
             return Pair(newVertex, null)
         }
 
@@ -26,7 +34,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     val newVertex = AVLVertex(key, value)
                     cur.left = newVertex
                     newVertex.parent = cur
-                    size += 1
                     return Pair(newVertex, null)
                 }
                 cur = cur.left ?: throw IllegalStateException("Case when cur.left is null is processed above")
@@ -35,7 +42,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     val newVertex = AVLVertex(key, value)
                     cur.right = newVertex
                     newVertex.parent = cur
-                    size += 1
                     return Pair(newVertex, null)
                 }
                 cur = cur.right ?: throw IllegalStateException("Case when cur.rightt is null is processed above")
@@ -47,6 +53,10 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         }
     }
 
+    /**
+     * Climbing up the tree, updates diffHeights of vertices after set and calls
+     * [balanceOnce] if vertex became unbalanced
+     */
     private fun balanceAfterSet(vertex: AVLVertex<K, V>) {
         var cur = vertex
         var prevKey = cur.key
@@ -65,39 +75,81 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
     }
 
     public override fun remove(key: K): V? {
-        var toRemove = vertByKey(key)
-        var returnResult = toRemove?.value
-        var toBalance: AVLVertex<K, V>? = null
-        if (toRemove == null) return null
+        val toRemove = vertByKey(key) ?: return null
+        val oldValue = toRemove.value
+        removeVert(toRemove)
+        size -= 1
+        return oldValue
+    }
 
-        if ((toRemove.left == null) and (toRemove.right == null)) {
-            toBalance = toRemove.parent
-            toRemove = null
-        } else if (toRemove.right == null) {
-            toRemove.left?.parent = toRemove.parent
-            toRemove = toRemove.left
-            toBalance = toRemove?.parent
-        } else {
-            var minRight = minVertex(toRemove.right)
-            if (toRemove.right == minRight) {
-            } else {
-                minRight?.parent?.left = null
-                minRight?.right = toRemove.right
+    /**
+     * Removes specified vertex and balances the tree
+     */
+    private fun removeVert(toRemove: AVLVertex<K, V>) {
+        val parent = toRemove.parent
+        if (toRemove.left == null && toRemove.right == null) {
+            when {
+                parent == null -> root = null
+
+                parent.left == toRemove -> {
+                    parent.left = null
+                    parent.diffHeight -= 1
+                }
+
+                parent.right == toRemove -> {
+                    parent.right = null
+                    parent.diffHeight += 1
+                }
             }
-            minRight?.left = toRemove.left
-            minRight?.parent = toRemove.parent
-            toRemove = minRight
-            toBalance = toRemove?.parent
+            balanceAfterRemove(parent)
+        } else if (toRemove.right == null) {
+            toRemove.left?.let {
+                toRemove.key = it.key
+                toRemove.value = it.value
+                toRemove.left = null
+                toRemove.diffHeight = 0
+            }
+            balanceAfterRemove(parent)
+            when {
+                parent?.left == toRemove -> parent.diffHeight -= 1
+                parent?.right == toRemove -> parent.diffHeight += 1
+            }
+        } else {
+            val minRight = minVertex(toRemove.right)
+                ?: throw IllegalStateException("min of subtree can't be null if it's contains at least one element")
+            toRemove.key = minRight.key
+            toRemove.value = minRight.value
+            removeVert(minRight)
         }
-        return TODO()
+    }
+
+    /**
+     * Climbing up the tree, updates diffHeights of vertices after remove and calls
+     * [balanceOnce] if vertex became unbalanced
+     */
+    private fun balanceAfterRemove(vertex: AVLVertex<K, V>?) {
+        var cur = vertex ?: return
+        while (cur.diffHeight != 0) {
+            cur = balanceOnce(cur)
+            if (cur.diffHeight != 0) {
+                when {
+                    cur.parent?.left == cur -> cur.parent?.let { it.diffHeight -= 1 }
+                    cur.parent?.right == cur -> cur.parent?.let { it.diffHeight += 1 }
+                }
+            }
+        }
     }
 
     private fun getDiffHeight(vertex: AVLVertex<K, V>?): Int {
         return vertex?.diffHeight ?: 0
     }
 
-    private fun balanceOnce(vertex_: AVLVertex<K, V>): AVLVertex<K, V> {
-        var vertex = vertex_
+    /**
+     * Balances subtree by specified root, updates diffHeights of vertices
+     * @return new root of subtree
+     */
+    private fun balanceOnce(_vertex: AVLVertex<K, V>): AVLVertex<K, V> {
+        var vertex = _vertex
         if (vertex.diffHeight == 2) {
             if (getDiffHeight(vertex.left) >= 0) {
                 vertex = rotateRight(vertex)
