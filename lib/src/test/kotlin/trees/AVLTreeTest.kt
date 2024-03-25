@@ -4,13 +4,39 @@
 package trees
 
 import bstrees.implementations.AVLTree
+import bstrees.implementations.AVLVertex
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class AVLTreeTest {
     private lateinit var avlTree: AVLTree<Int, Int>
+
+    /**
+     * Traverse all vertices of the tree and asserts that their diffHeights are
+     * equal to real difference of the subtrees.
+     * @return height of the subtree with the root at the specified [vertex]
+     */
+    fun checkVertexInvariant(vertex: AVLVertex<*, *>?): Int {
+        if (vertex == null) return 0
+
+        val leftSubtreeHeight = checkVertexInvariant(vertex.left)
+        val rightSubtreeHeight = checkVertexInvariant(vertex.right)
+        val difference = leftSubtreeHeight - rightSubtreeHeight
+        assertTrue(
+            difference in -1..1,
+            "Difference in the heights of subtrees must be in [-1,1]"
+        )
+        assertEquals(
+            difference, vertex.diffHeight,
+            "Property diffHeights must match real difference in the heights of subtrees (key = ${vertex.key})"
+        )
+        return maxOf(checkVertexInvariant(vertex.left), checkVertexInvariant(vertex.right)) + 1
+    }
 
     @BeforeEach
     fun setup() {
@@ -21,7 +47,7 @@ class AVLTreeTest {
     fun `simple array test`() {
         val array = intArrayOf(0, 1, 2, 3, 4)
         for (i in array) {
-            avlTree.set(i, -i)
+            avlTree[i] = -i
         }
         val expectedGet: Array<Int?> = Array(5, { i -> -i })
         val actualGet: Array<Int?> = Array(5, { i -> avlTree.get(i) })
@@ -29,15 +55,16 @@ class AVLTreeTest {
         val expectedSize = 5
         val actualSize = avlTree.size
         assertEquals(expectedSize, actualSize, "Size the tree must correspond to the number key-value pairs")
+        checkVertexInvariant(avlTree.root)
     }
 
     @Test
     fun `size of avl tree with duplicate keys`() {
         for (i in 1..10) {
-            avlTree.set(i, 30 + i)
+            avlTree[i] = i + 30
         }
         for (i in 6..10) {
-            avlTree.set(i, 0)
+            avlTree[i] = 0
         }
 
         val expectedSize = 10
@@ -46,15 +73,16 @@ class AVLTreeTest {
             expectedSize, actualSize,
             "Size of the tree must not change after overwriting an existing key"
         )
+        checkVertexInvariant(avlTree.root)
     }
 
     @Test
     fun `set keys twice`() {
         for (i in 1..10) {
-            avlTree.set(i, 30 + i)
+            avlTree[i] = 30 + i
         }
         for (i in 1..10) {
-            avlTree.set(i, 0)
+            avlTree[i] = 0
         }
 
         val expectedSize = 10
@@ -63,6 +91,7 @@ class AVLTreeTest {
             expectedSize, actualSize,
             "Size of the tree must not change after overwriting an existing key"
         )
+        checkVertexInvariant(avlTree.root)
     }
 
     @Test
@@ -98,7 +127,7 @@ class AVLTreeTest {
     }
 
     @Test
-    fun `simple iterator test`() {
+    fun `simple iteration`() {
         val keys = intArrayOf(1, 7, 4, 9, 2, -44, 3)
         val values = intArrayOf(19, 14, 31, 17, 12, -34, 0)
         for (i in 0..<keys.size) {
@@ -107,8 +136,46 @@ class AVLTreeTest {
 
         val expectedResult: Array<Int?> = arrayOf(-34, 19, 12, 0, 31, 14, 17)
         val iterator = avlTree.iterator()
-        val actualResult: Array<Int?> = Array(7, { i -> iterator.next().second })
+        val actualResult: Array<Int?> = Array(7, { iterator.next().second })
         assertContentEquals(expectedResult, actualResult, "Iterator must return vertices in keys order")
+        checkVertexInvariant(avlTree.root)
 
+    }
+
+    @Test
+    fun `rotate left`() {
+        val keys = intArrayOf(0, -1, 3, 2, 5, 6)
+        for (i in keys) avlTree[i] = i
+
+        val expectedResult = Array<Int?>(keys.size, { i -> avlTree[i] })
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[i] })
+        assertContentEquals(expectedResult, actualResult, "Get must return corresponding value")
+        checkVertexInvariant(avlTree.root)
+
+//                  0                        3
+//                 / \                     /   \
+//               -1   3                   0     5
+//                   /  \       -->      / \     \
+//                  2    5             -1   2     6
+//                        \
+//                         6
+    }
+
+    fun `rotate right`() {
+        val keys = intArrayOf(0, 1, -3, -2, -5, -6)
+        for (i in keys) avlTree[i] = i
+
+        val expectedResult = Array<Int?>(keys.size, { i -> avlTree[i] })
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[i] })
+        assertContentEquals(expectedResult, actualResult, "Get must return corresponding value")
+        checkVertexInvariant(avlTree.root)
+
+//                  0                   -3
+//                 / \                 /  \
+//               -3   1              -5    0
+//              /  \        -->     /     /  \
+//            -5   -2             -6    -2    1
+//            /
+//          -6
     }
 }
