@@ -155,7 +155,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 vertex = rotateRight(vertex)
             } else if (getDiffHeight(vertex.left) == -1) {
                 vertex.left?.let {
-                    vertex = rotateLeft(it)
+                    vertex.left = rotateLeft(it)
                     vertex = rotateRight(vertex)
                 }
             }
@@ -165,7 +165,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 vertex = rotateLeft(vertex)
             } else if (getDiffHeight(vertex.right) == 1) {
                 vertex.right?.let {
-                    vertex = rotateRight(vertex)
+                    vertex.right = rotateRight(it)
                     vertex = rotateLeft(vertex)
                 }
             }

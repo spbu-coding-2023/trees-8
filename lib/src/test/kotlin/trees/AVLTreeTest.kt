@@ -6,6 +6,7 @@ package trees
 import bstrees.implementations.AVLTree
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class AVLTreeTest {
@@ -18,13 +19,13 @@ class AVLTreeTest {
 
     @Test
     fun `simple array test`() {
-        val array = intArrayOf(1, 2, 3, 4, 5)
+        val array = intArrayOf(0, 1, 2, 3, 4)
         for (i in array) {
             avlTree.set(i, -i)
         }
-        val expectedGet = -5
-        val actualGet = avlTree.get(5)
-        assertEquals(expectedGet, actualGet, "Get method must return the value associated with the key")
+        val expectedGet: Array<Int?> = Array(5, { i -> -i })
+        val actualGet: Array<Int?> = Array(5, { i -> avlTree.get(i) })
+        assertContentEquals(expectedGet, actualGet, "Get method must return the value associated with the key")
         val expectedSize = 5
         val actualSize = avlTree.size
         assertEquals(expectedSize, actualSize, "Size the tree must correspond to the number key-value pairs")
@@ -94,5 +95,20 @@ class AVLTreeTest {
             expectedResult, actualResult,
             "Remove a non-existent key must return null"
         )
+    }
+
+    @Test
+    fun `simple iterator test`() {
+        val keys = intArrayOf(1, 7, 4, 9, 2, -44, 3)
+        val values = intArrayOf(19, 14, 31, 17, 12, -34, 0)
+        for (i in 0..<keys.size) {
+            avlTree[keys[i]] = values[i]
+        }
+
+        val expectedResult: Array<Int?> = arrayOf(-34, 19, 12, 0, 31, 14, 17)
+        val iterator = avlTree.iterator()
+        val actualResult: Array<Int?> = Array(7, { i -> iterator.next().second })
+        assertContentEquals(expectedResult, actualResult, "Iterator must return vertices in keys order")
+
     }
 }
