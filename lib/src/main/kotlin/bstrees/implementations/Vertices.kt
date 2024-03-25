@@ -6,7 +6,7 @@ class SimpleVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V
 
 class AVLVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, AVLVertex<K, V>>(key, value) {
     var diffHeight: Int = 0
-        set(value) {
+        internal set(value) {
             if (value !in -2..2) {
                 throw IllegalArgumentException("difference of heights can't be out of [-2,2]")
             }
@@ -16,6 +16,7 @@ class AVLVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, A
 
 class RBVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, RBVertex<K, V>>(key, value) {
     var color: Color = Color.BLACK
+        internal set
 
     enum class Color {
         BLACK,

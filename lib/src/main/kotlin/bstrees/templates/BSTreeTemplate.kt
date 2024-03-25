@@ -5,6 +5,7 @@ import javax.swing.text.StyledEditorKit.BoldAction
 
 abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> {
     var root: Vertex_t? = null
+        protected set
     var size: Int = 0
         protected set(value) {
             if (value >= 0) {
