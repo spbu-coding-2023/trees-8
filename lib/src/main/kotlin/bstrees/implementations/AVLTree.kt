@@ -129,14 +129,15 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
      */
     private fun balanceAfterRemove(vertex: AVLVertex<K, V>?) {
         var cur = vertex ?: return
-        while (cur.diffHeight != 0) {
+        while (cur.diffHeight != 1 && cur.diffHeight != -1) {
             cur = balanceOnce(cur)
-            if (cur.diffHeight != 0) {
+            if (cur.diffHeight != 1 && cur.diffHeight != -1) {
                 when {
                     cur.parent?.left == cur -> cur.parent?.let { it.diffHeight -= 1 }
                     cur.parent?.right == cur -> cur.parent?.let { it.diffHeight += 1 }
                 }
             }
+            cur = cur.parent ?: return
         }
     }
 
@@ -175,7 +176,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
 
     private fun rotateRight(origin: AVLVertex<K, V>): AVLVertex<K, V> {
         val left = origin.left
-            ?: throw IllegalStateException("difference of heights can't be 2 if left Vertex doesn't exist")
+            ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
 
         left.parent = origin.parent
         if (origin.parent?.left == origin) origin.parent?.left = left
@@ -186,13 +187,46 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         origin.left?.parent = origin
         left.right = origin
 
-        if (left.diffHeight == 0) {
-            origin.diffHeight = 1
-            left.diffHeight = -1
-        } else if (left.diffHeight == 1) {
-            origin.diffHeight = 0
-            left.diffHeight = 0
+        when (origin.diffHeight) {
+            2 -> {
+                when (left.diffHeight) {
+                    0 -> {
+                        origin.diffHeight = 1
+                        left.diffHeight = -1
+                    }
+
+                    1 -> {
+                        origin.diffHeight = 0
+                        left.diffHeight = 0
+                    }
+
+                    else -> throw IllegalStateException(
+                        "Right rotate is possible only when left subtree diffHeight in [0,1]"
+                    )
+                }
+            }
+
+            1 -> {
+                when (left.diffHeight) {
+                    0 -> {
+                        origin.diffHeight = 0
+                        left.diffHeight = -1
+                    }
+
+                    1 -> {
+                        origin.diffHeight = -1
+                        left.diffHeight = -1
+
+                    }
+
+                    else -> throw IllegalStateException(
+                        "Right rotate is possible only when left subtree diffHeight in [0,1]"
+                    )
+
+                }
+            }
         }
+
         if (origin == root) {
             root = left
         }
@@ -201,7 +235,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
 
     private fun rotateLeft(origin: AVLVertex<K, V>): AVLVertex<K, V> {
         val right = origin.right
-            ?: throw IllegalStateException("difference of heights can't be 2 if left Vertex doesn't exist")
+            ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
 
         right.parent = origin.parent
         if (origin.parent?.left == origin) origin.parent?.left = right
@@ -212,13 +246,46 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         origin.right?.parent = origin
         right.left = origin
 
-        if (right.diffHeight == 0) {
-            origin.diffHeight = -1
-            right.diffHeight = 1
-        } else if (right.diffHeight == -1) {
-            origin.diffHeight = 0
-            right.diffHeight = 0
+        when (origin.diffHeight) {
+            -2 -> {
+                when (right.diffHeight) {
+                    0 -> {
+                        origin.diffHeight = -1
+                        right.diffHeight = 1
+                    }
+
+                    -1 -> {
+                        origin.diffHeight = 0
+                        right.diffHeight = 0
+                    }
+
+                    else -> throw IllegalStateException(
+                        "Left rotate is possible only when right subtree diffHeight in [-1,0]"
+                    )
+                }
+            }
+
+            -1 -> {
+                when (right.diffHeight) {
+                    0 -> {
+                        origin.diffHeight = 0
+                        right.diffHeight = 1
+                    }
+
+                    1 -> {
+                        origin.diffHeight = 1
+                        right.diffHeight = 1
+
+                    }
+
+                    else -> throw IllegalStateException(
+                        "Left rotate is possible only when right subtree diffHeight in [-1,0]"
+                    )
+
+                }
+            }
         }
+
         if (origin == root) {
             root = right
         }

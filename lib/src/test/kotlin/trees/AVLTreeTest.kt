@@ -5,20 +5,18 @@ package trees
 
 import bstrees.implementations.AVLTree
 import bstrees.implementations.AVLVertex
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class AVLTreeTest {
     private lateinit var avlTree: AVLTree<Int, Int>
 
     /**
      * Traverse all vertices of the tree and asserts that their diffHeights are
-     * equal to real difference of the subtrees.
+     * equal to real height difference of the subtrees.
      * @return height of the subtree with the root at the specified [vertex]
      */
     fun checkVertexInvariant(vertex: AVLVertex<*, *>?): Int {
@@ -29,11 +27,11 @@ class AVLTreeTest {
         val difference = leftSubtreeHeight - rightSubtreeHeight
         assertTrue(
             difference in -1..1,
-            "Difference in the heights of subtrees must be in [-1,1]"
+            "Height difference of subtrees must be in [-1,1]"
         )
         assertEquals(
             difference, vertex.diffHeight,
-            "Property diffHeights must match real difference in the heights of subtrees (key = ${vertex.key})"
+            "Property diffHeights must match real Height difference of subtrees (key = ${vertex.key})"
         )
         return maxOf(checkVertexInvariant(vertex.left), checkVertexInvariant(vertex.right)) + 1
     }
@@ -143,39 +141,91 @@ class AVLTreeTest {
     }
 
     @Test
-    fun `rotate left`() {
-        val keys = intArrayOf(0, -1, 3, 2, 5, 6)
-        for (i in keys) avlTree[i] = i
+    fun `rotate left, right diffHeight = -1`() {
+        val keys = intArrayOf(0, -1, 2, 1, 3, 4)
+        for (key in keys) avlTree[key] = key
 
-        val expectedResult = Array<Int?>(keys.size, { i -> avlTree[i] })
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[i] })
-        assertContentEquals(expectedResult, actualResult, "Get must return corresponding value")
+        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after left rotate ( right.diffHeight = -1)"
+        )
         checkVertexInvariant(avlTree.root)
 
-//                  0                        3
-//                 / \                     /   \
-//               -1   3                   0     5
-//                   /  \       -->      / \     \
-//                  2    5             -1   2     6
-//                        \
-//                         6
+//                  0                    0                    2
+//                 / \                  / \                 /   \
+//               -1   2               -1   2               0     3
+//                   / \      -->         / \     -->     / \     \
+//                  1   3                1   3          -1   1     4
+//                                            \
+//                                             4
     }
 
-    fun `rotate right`() {
-        val keys = intArrayOf(0, 1, -3, -2, -5, -6)
-        for (i in keys) avlTree[i] = i
+    @Test
+    fun `rotate left, right diffHeiht = 0`() {
+        val keys = intArrayOf(0, -1, 4, 2, 6, -2, 1, 3, 5, 7)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(-2)
 
-        val expectedResult = Array<Int?>(keys.size, { i -> avlTree[i] })
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[i] })
-        assertContentEquals(expectedResult, actualResult, "Get must return corresponding value")
+        val expectedResult = arrayOf(0, -1, 4, 2, 6, null, 1, 3, 5, 7)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after left rotate (right.diffHeight = 0)"
+        )
+        checkVertexInvariant(avlTree.root)
+//                  0                     0                      4
+//                 / \                   / \                    /  \
+//               -1   4                -1   4                  0    6
+//              /    /  \       -->        /  \      -->      / \  / \
+//            -2    2    6                2    6            -1  2  5  7
+//                 / \  / \              / \  / \              / \
+//                1  3  5  7            1  3  5  7            1   3
+    }
+
+    @Test
+    fun `rotate right, left diffHeight = 1`() {
+        val keys = intArrayOf(0, 1, -1, -3, -2, -4)
+        for (key in keys) avlTree[key] = key
+
+        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after right rotate (left.diffHeight = 1)"
+        )
         checkVertexInvariant(avlTree.root)
 
-//                  0                   -3
-//                 / \                 /  \
-//               -3   1              -5    0
-//              /  \        -->     /     /  \
-//            -5   -2             -6    -2    1
-//            /
-//          -6
+//                  0                  0                  -1
+//                 / \                / \                /  \
+//               -1   1             -1   1             -3    0
+//              /  \       -->     /  \       -->     /     /  \
+//            -3   -2            -3   -2             -4    -2   1
+//                               /
+//                             -4
+    }
+
+    @Test
+    fun `rotate right, left diffHeight = 0`() {
+        val keys = intArrayOf(7, 3, 8, 9, 1, 5, 0, 2, 4, 6)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(9)
+
+        val expectedResult = arrayOf(7, 3, 8, null, 1, 5, 0, 2, 4, 6)
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after right rotate (left.diffHeight = 0)"
+        )
+        checkVertexInvariant(avlTree.root)
+
+//                 7                     7                        3
+//                / \                   / \                      /  \
+//               3   8                 3   8                    1    7
+//              / \   \       -->     / \          -->         / \  / \
+//             1   5   9             1   5                    0  2  5  8
+//            / \ / \               / \ / \                        / \
+//           0  2 4  6             0  2 4  6                      4   6
     }
 }
