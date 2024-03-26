@@ -3,7 +3,6 @@ package bstrees.implementations
 import bstrees.templates.BSTreeTemplate
 
 class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>>() {
-
     override fun remove(key: K): V? {
         val vertex = vertByKey(key) ?: return null
         val parent = vertex.parent
@@ -36,8 +35,10 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
         return oldValue
     }
 
-    override operator fun set(key: K, value: V): V? {
-
+    override operator fun set(
+        key: K,
+        value: V,
+    ): V? {
         if (root == null) {
             val vertex = SimpleVertex(key, value)
             root = vertex

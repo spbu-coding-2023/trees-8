@@ -3,8 +3,10 @@ package bstrees.implementations
 import bstrees.templates.BalanceBSTreeTemplate
 
 class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
-
-    public override operator fun set(key: K, value: V): V? {
+    public override operator fun set(
+        key: K,
+        value: V,
+    ): V? {
         val (currentVert, oldValue) = setWithoutBalance(key, value)
         if (oldValue == null) {
             size += 1
@@ -19,7 +21,10 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
      * Returns: a pair of set vertex and old value.
      * If key didn't exist, the returned value is null.
      */
-    private fun setWithoutBalance(key: K, value: V): Pair<AVLVertex<K, V>, V?> {
+    private fun setWithoutBalance(
+        key: K,
+        value: V,
+    ): Pair<AVLVertex<K, V>, V?> {
         if (root == null) {
             val newVertex = AVLVertex(key, value)
             root = newVertex
@@ -115,8 +120,9 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 parent?.right == toRemove -> parent.diffHeight += 1
             }
         } else {
-            val minRight = minVertex(toRemove.right)
-                ?: throw IllegalStateException("min of subtree can't be null if it's contains at least one element")
+            val minRight =
+                minVertex(toRemove.right)
+                    ?: throw IllegalStateException("min of subtree can't be null if it's contains at least one element")
             toRemove.key = minRight.key
             toRemove.value = minRight.value
             removeVert(minRight)
@@ -160,7 +166,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     vertex = rotateRight(vertex)
                 }
             }
-
         } else if (vertex.diffHeight == -2) {
             if (getDiffHeight(vertex.right) <= 0) {
                 vertex = rotateLeft(vertex)
@@ -175,8 +180,9 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
     }
 
     private fun rotateRight(origin: AVLVertex<K, V>): AVLVertex<K, V> {
-        val left = origin.left
-            ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
+        val left =
+            origin.left
+                ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
 
         left.parent = origin.parent
         if (origin.parent?.left == origin) {
@@ -220,14 +226,12 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     1 -> {
                         origin.diffHeight = -1
                         left.diffHeight = -1
-
                     }
 
                     -1 -> {
                         origin.diffHeight = 0
                         left.diffHeight = -2
                     }
-
                 }
             }
         }
@@ -239,8 +243,9 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
     }
 
     private fun rotateLeft(origin: AVLVertex<K, V>): AVLVertex<K, V> {
-        val right = origin.right
-            ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
+        val right =
+            origin.right
+                ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
 
         right.parent = origin.parent
         if (origin.parent?.left == origin) {
@@ -284,14 +289,12 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     -1 -> {
                         origin.diffHeight = 1
                         right.diffHeight = 1
-
                     }
 
                     1 -> {
                         origin.diffHeight = 0
                         right.diffHeight = 2
                     }
-
                 }
             }
         }

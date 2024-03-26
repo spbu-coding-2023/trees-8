@@ -1,4 +1,3 @@
 package bstrees.implementations
 
-class RBTree {
-}
+class RBTree
