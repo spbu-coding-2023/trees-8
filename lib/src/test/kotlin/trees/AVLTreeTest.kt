@@ -19,11 +19,11 @@ class AVLTreeTest {
      * equal to real height difference of the subtrees.
      * @return height of the subtree with the root at the specified [vertex]
      */
-    fun checkVertexInvariant(vertex: AVLVertex<*, *>?): Int {
+    fun checkTreeInvariant(vertex: AVLVertex<*, *>?): Int {
         if (vertex == null) return 0
 
-        val leftSubtreeHeight = checkVertexInvariant(vertex.left)
-        val rightSubtreeHeight = checkVertexInvariant(vertex.right)
+        val leftSubtreeHeight = checkTreeInvariant(vertex.left)
+        val rightSubtreeHeight = checkTreeInvariant(vertex.right)
         val difference = leftSubtreeHeight - rightSubtreeHeight
         assertTrue(
             difference in -1..1,
@@ -33,7 +33,7 @@ class AVLTreeTest {
             difference, vertex.diffHeight,
             "Property diffHeights must match real Height difference of subtrees (key = ${vertex.key})"
         )
-        return maxOf(checkVertexInvariant(vertex.left), checkVertexInvariant(vertex.right)) + 1
+        return maxOf(checkTreeInvariant(vertex.left), checkTreeInvariant(vertex.right)) + 1
     }
 
     @BeforeEach
@@ -53,7 +53,7 @@ class AVLTreeTest {
         val expectedSize = 5
         val actualSize = avlTree.size
         assertEquals(expectedSize, actualSize, "Size the tree must correspond to the number key-value pairs")
-        checkVertexInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -71,7 +71,7 @@ class AVLTreeTest {
             expectedSize, actualSize,
             "Size of the tree must not change after overwriting an existing key"
         )
-        checkVertexInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -89,7 +89,7 @@ class AVLTreeTest {
             expectedSize, actualSize,
             "Size of the tree must not change after overwriting an existing key"
         )
-        checkVertexInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -107,8 +107,87 @@ class AVLTreeTest {
         )
         assertEquals(
             expectedSize, actualSize,
-            "Size tree must decrease after removing the existing key"
+            "Size of the tree must decrease after removing the existing key"
         )
+    }
+
+    @Test
+    fun `remove with left vertex`() {
+        val keys = intArrayOf(0, -1, 1, -2)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(-1)
+
+        val expectedResult = arrayOf(0, null, 1, -2)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Tree must save all other vertices after remove vertex with existing left vertex"
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `remove with right subtree of height 1`() {
+        val keys = intArrayOf(0, -1, 3, 1, 2)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(3)
+
+        val expectedResult = arrayOf(0, -1, null, 1, 2)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Tree must save all other vertices after remove vertex with right subtree of height 1"
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `remove with right subtree of height more than 1`() {
+        val keys = intArrayOf(0, -1, 3, -2, 1, 6, 4, 7)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(3)
+
+        val expectedResult = arrayOf(0, -1, null, -2, 1, 6, 4, 7)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Tree must save all other vertices after remove vertex with right subtree of height >1"
+        )
+        checkTreeInvariant(avlTree.root)
+        avlTree[5] = 5
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `remove with necessary double rotate`() {
+        val keys = intArrayOf(5, 0, 7, -1, 2, 6, 9, -2, 1, 3, 8, 4)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(7)
+
+        val expectedResult = arrayOf(5, 0, null, -1, 2, 6, 9, -2, 1, 3, 8, 4)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Tree must save all other vertices after remove that creates unbalance situation"
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `remove root with double rotate`() {
+        val keys = intArrayOf(4, 1, 6, 0, 3, 5, 2)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(4)
+
+        assertTrue(avlTree.root != null)
+        val expectedResult = arrayOf(null, 1, 6, 0, 3, 5, 2)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Tree must save all other vertices after root remove"
+        )
+        checkTreeInvariant(avlTree.root)
+
     }
 
     @Test
@@ -136,7 +215,7 @@ class AVLTreeTest {
         val iterator = avlTree.iterator()
         val actualResult: Array<Int?> = Array(7, { iterator.next().second })
         assertContentEquals(expectedResult, actualResult, "Iterator must return vertices in keys order")
-        checkVertexInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.root)
 
     }
 
@@ -151,7 +230,7 @@ class AVLTreeTest {
             expectedResult, actualResult,
             "Get must return corresponding values after left rotate ( right.diffHeight = -1)"
         )
-        checkVertexInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.root)
 
 //                  0                    0                    2
 //                 / \                  / \                 /   \
@@ -174,7 +253,7 @@ class AVLTreeTest {
             expectedResult, actualResult,
             "Get must return corresponding values after left rotate (right.diffHeight = 0)"
         )
-        checkVertexInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.root)
 //                  0                     0                      4
 //                 / \                   / \                    /  \
 //               -1   4                -1   4                  0    6
@@ -195,7 +274,7 @@ class AVLTreeTest {
             expectedResult, actualResult,
             "Get must return corresponding values after right rotate (left.diffHeight = 1)"
         )
-        checkVertexInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.root)
 
 //                  0                  0                  -1
 //                 / \                / \                /  \
@@ -218,7 +297,7 @@ class AVLTreeTest {
             expectedResult, actualResult,
             "Get must return corresponding values after right rotate (left.diffHeight = 0)"
         )
-        checkVertexInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.root)
 
 //                 7                     7                        3
 //                / \                   / \                      /  \
