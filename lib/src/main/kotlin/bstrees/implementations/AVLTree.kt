@@ -166,7 +166,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 vertex = rotateLeft(vertex)
             } else if (getDiffHeight(vertex.right) == 1) {
                 vertex.right?.let {
-                    vertex.right = rotateRight(it)
+                    rotateRight(it)
                     vertex = rotateLeft(vertex)
                 }
             }
@@ -200,9 +200,10 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                         left.diffHeight = 0
                     }
 
-                    else -> throw IllegalStateException(
-                        "Right rotate is possible only when left subtree diffHeight in [0,1]"
-                    )
+                    2 -> {
+                        origin.diffHeight = -1
+                        left.diffHeight = 0
+                    }
                 }
             }
 
@@ -219,9 +220,10 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
 
                     }
 
-                    else -> throw IllegalStateException(
-                        "Right rotate is possible only when left subtree diffHeight in [0,1]"
-                    )
+                    -1 -> {
+                        origin.diffHeight = 0
+                        left.diffHeight = -2
+                    }
 
                 }
             }
@@ -259,9 +261,10 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                         right.diffHeight = 0
                     }
 
-                    else -> throw IllegalStateException(
-                        "Left rotate is possible only when right subtree diffHeight in [-1,0]"
-                    )
+                    -2 -> {
+                        origin.diffHeight = 1
+                        right.diffHeight = 0
+                    }
                 }
             }
 
@@ -272,15 +275,16 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                         right.diffHeight = 1
                     }
 
-                    1 -> {
+                    -1 -> {
                         origin.diffHeight = 1
                         right.diffHeight = 1
 
                     }
 
-                    else -> throw IllegalStateException(
-                        "Left rotate is possible only when right subtree diffHeight in [-1,0]"
-                    )
+                    1 -> {
+                        origin.diffHeight = 0
+                        right.diffHeight = 2
+                    }
 
                 }
             }
