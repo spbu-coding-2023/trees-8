@@ -179,8 +179,11 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
             ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
 
         left.parent = origin.parent
-        if (origin.parent?.left == origin) origin.parent?.left = left
-        else origin.parent?.right = left
+        if (origin.parent?.left == origin) {
+            origin.parent?.left = left
+        } else {
+            origin.parent?.right = left
+        }
 
         origin.parent = left
         origin.left = left.right
@@ -240,8 +243,11 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
             ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
 
         right.parent = origin.parent
-        if (origin.parent?.left == origin) origin.parent?.left = right
-        else origin.parent?.right = right
+        if (origin.parent?.left == origin) {
+            origin.parent?.left = right
+        } else {
+            origin.parent?.right = right
+        }
 
         origin.parent = right
         origin.right = right.left

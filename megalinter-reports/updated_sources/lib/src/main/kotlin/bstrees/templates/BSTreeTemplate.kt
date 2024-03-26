@@ -4,7 +4,6 @@ import java.util.Stack
 
 abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> {
     var root: Vertex_t? = null
-        protected set
     var size: Int = 0
         protected set(value) {
             if (value >= 0) {
@@ -43,7 +42,16 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
      * Returns the value corresponding to the given [key], or `null` if such a key is not present in the tree.
      */
     public operator fun get(key: K): V? {
-        return vertByKey(key)?.value
+        var cur = root
+        while (cur != null) {
+            val result = key.compareTo(cur.key)
+            when {
+                result < 0 -> cur = cur.left
+                result > 0 -> cur = cur.right
+                result == 0 -> return cur.value
+            }
+        }
+        return null
     }
 
     /**
@@ -111,7 +119,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         return minVertex(root)?.toPair()
     }
 
-    protected fun minVertex(vertex: Vertex_t?): Vertex_t? {
+    private fun minVertex(vertex: Vertex_t?): Vertex_t? {
         var cur = vertex
         while (cur?.left != null) {
             cur = cur.left
@@ -130,20 +138,6 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
         var cur = vertex
         while (cur?.right != null) {
             cur = cur.right
-        }
-        return cur
-    }
-
-    protected fun vertByKey(key: K): Vertex_t? {
-        var cur = root
-        while (cur != null) {
-            if (key < cur.key) {
-                cur = cur.left
-            } else if (key > cur.key) {
-                cur = cur.right
-            } else if (key == cur.key) {
-                break
-            }
         }
         return cur
     }
