@@ -3,15 +3,24 @@ package bstrees.implementations
 import bstrees.templates.BalanceBSTreeTemplate
 
 class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
-    public override fun set(
+    public override operator fun set(
         key: K,
         value: V,
     ): V? {
-        val (currentVert, returnResult) = setWithoutBalance(key, value)
-        balance(currentVert)
-        return returnResult
+        val (currentVert, oldValue) = setWithoutBalance(key, value)
+        if (oldValue == null) {
+            size += 1
+            balanceAfterSet(currentVert)
+        }
+        return oldValue
     }
 
+    /**
+     * Set specified value by specified key
+     *
+     * Returns: a pair of set vertex and old value.
+     * If key didn't exist, the returned value is null.
+     */
     private fun setWithoutBalance(
         key: K,
         value: V,
@@ -19,7 +28,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         if (root == null) {
             val newVertex = AVLVertex(key, value)
             root = newVertex
-            size += 1
             return Pair(newVertex, null)
         }
 
@@ -31,7 +39,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     val newVertex = AVLVertex(key, value)
                     cur.left = newVertex
                     newVertex.parent = cur
-                    size += 1
                     return Pair(newVertex, null)
                 }
                 cur = cur.left ?: throw IllegalStateException("Case when cur.left is null is processed above")
@@ -40,7 +47,6 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     val newVertex = AVLVertex(key, value)
                     cur.right = newVertex
                     newVertex.parent = cur
-                    size += 1
                     return Pair(newVertex, null)
                 }
                 cur = cur.right ?: throw IllegalStateException("Case when cur.rightt is null is processed above")
@@ -52,7 +58,11 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         }
     }
 
-    private fun balance(vertex: AVLVertex<K, V>) {
+    /**
+     * Climbing up the tree, updates diffHeights of vertices after set and calls
+     * [balanceOnce] if vertex became unbalanced
+     */
+    private fun balanceAfterSet(vertex: AVLVertex<K, V>) {
         var cur = vertex
         var prevKey = cur.key
         while (cur.parent != null) {
@@ -64,27 +74,76 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                 cur.diffHeight -= 1
             }
 
-            if (cur.diffHeight == 2) {
-                if (getDiffHeight(cur.left) >= 0) {
-                    cur = rotateRight(cur)
-                } else if (getDiffHeight(cur.left) == -1) {
-                    cur.left?.let {
-                        cur = rotateLeft(it)
-                        cur = rotateRight(cur)
-                    }
+            cur = balanceOnce(cur)
+            if (cur.diffHeight == 0) break
+        }
+    }
+
+    public override fun remove(key: K): V? {
+        val toRemove = vertByKey(key) ?: return null
+        val oldValue = toRemove.value
+        removeVert(toRemove)
+        size -= 1
+        return oldValue
+    }
+
+    /**
+     * Removes specified vertex and balances the tree
+     */
+    private fun removeVert(toRemove: AVLVertex<K, V>) {
+        val parent = toRemove.parent
+        if (toRemove.left == null && toRemove.right == null) {
+            when {
+                parent == null -> root = null
+
+                parent.left == toRemove -> {
+                    parent.left = null
+                    parent.diffHeight -= 1
                 }
-            } else if (cur.diffHeight == -2) {
-                if (getDiffHeight(cur.right) <= 0) {
-                    cur = rotateLeft(cur)
-                } else if (getDiffHeight(cur.right) == 1) {
-                    cur.right?.let {
-                        cur = rotateRight(cur)
-                        cur = rotateLeft(cur)
-                    }
+
+                parent.right == toRemove -> {
+                    parent.right = null
+                    parent.diffHeight += 1
                 }
             }
+            balanceAfterRemove(parent)
+        } else if (toRemove.right == null) {
+            toRemove.left?.let {
+                toRemove.key = it.key
+                toRemove.value = it.value
+                toRemove.left = null
+                toRemove.diffHeight = 0
+            }
+            balanceAfterRemove(parent)
+            when {
+                parent?.left == toRemove -> parent.diffHeight -= 1
+                parent?.right == toRemove -> parent.diffHeight += 1
+            }
+        } else {
+            val minRight =
+                minVertex(toRemove.right)
+                    ?: throw IllegalStateException("min of subtree can't be null if it's contains at least one element")
+            toRemove.key = minRight.key
+            toRemove.value = minRight.value
+            removeVert(minRight)
+        }
+    }
 
-            if (cur.diffHeight == 0) break
+    /**
+     * Climbing up the tree, updates diffHeights of vertices after remove and calls
+     * [balanceOnce] if vertex became unbalanced
+     */
+    private fun balanceAfterRemove(vertex: AVLVertex<K, V>?) {
+        var cur = vertex ?: return
+        while (cur.diffHeight != 1 && cur.diffHeight != -1) {
+            cur = balanceOnce(cur)
+            if (cur.diffHeight != 1 && cur.diffHeight != -1) {
+                when {
+                    cur.parent?.left == cur -> cur.parent?.let { it.diffHeight -= 1 }
+                    cur.parent?.right == cur -> cur.parent?.let { it.diffHeight += 1 }
+                }
+            }
+            cur = cur.parent ?: return
         }
     }
 
@@ -92,10 +151,38 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         return vertex?.diffHeight ?: 0
     }
 
+    /**
+     * Balances subtree by specified root, updates diffHeights of vertices
+     * @return new root of subtree
+     */
+    private fun balanceOnce(_vertex: AVLVertex<K, V>): AVLVertex<K, V> {
+        var vertex = _vertex
+        if (vertex.diffHeight == 2) {
+            if (getDiffHeight(vertex.left) >= 0) {
+                vertex = rotateRight(vertex)
+            } else if (getDiffHeight(vertex.left) == -1) {
+                vertex.left?.let {
+                    vertex.left = rotateLeft(it)
+                    vertex = rotateRight(vertex)
+                }
+            }
+        } else if (vertex.diffHeight == -2) {
+            if (getDiffHeight(vertex.right) <= 0) {
+                vertex = rotateLeft(vertex)
+            } else if (getDiffHeight(vertex.right) == 1) {
+                vertex.right?.let {
+                    rotateRight(it)
+                    vertex = rotateLeft(vertex)
+                }
+            }
+        }
+        return vertex
+    }
+
     private fun rotateRight(origin: AVLVertex<K, V>): AVLVertex<K, V> {
         val left =
             origin.left
-                ?: throw IllegalStateException("difference of heights can't be 2 if left Vertex doesn't exist")
+                ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
 
         left.parent = origin.parent
         if (origin.parent?.left == origin) {
@@ -109,13 +196,46 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         origin.left?.parent = origin
         left.right = origin
 
-        if (left.diffHeight == 0) {
-            origin.diffHeight = 1
-            left.diffHeight = -1
-        } else if (left.diffHeight == 1) {
-            origin.diffHeight = 0
-            left.diffHeight = 0
+        when (origin.diffHeight) {
+            2 -> {
+                when (left.diffHeight) {
+                    0 -> {
+                        origin.diffHeight = 1
+                        left.diffHeight = -1
+                    }
+
+                    1 -> {
+                        origin.diffHeight = 0
+                        left.diffHeight = 0
+                    }
+
+                    2 -> {
+                        origin.diffHeight = -1
+                        left.diffHeight = 0
+                    }
+                }
+            }
+
+            1 -> {
+                when (left.diffHeight) {
+                    0 -> {
+                        origin.diffHeight = 0
+                        left.diffHeight = -1
+                    }
+
+                    1 -> {
+                        origin.diffHeight = -1
+                        left.diffHeight = -1
+                    }
+
+                    -1 -> {
+                        origin.diffHeight = 0
+                        left.diffHeight = -2
+                    }
+                }
+            }
         }
+
         if (origin == root) {
             root = left
         }
@@ -125,7 +245,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
     private fun rotateLeft(origin: AVLVertex<K, V>): AVLVertex<K, V> {
         val right =
             origin.right
-                ?: throw IllegalStateException("difference of heights can't be 2 if left Vertex doesn't exist")
+                ?: throw IllegalStateException("Height difference can't be 2 if left Vertex doesn't exist")
 
         right.parent = origin.parent
         if (origin.parent?.left == origin) {
@@ -139,20 +259,49 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         origin.right?.parent = origin
         right.left = origin
 
-        if (right.diffHeight == 0) {
-            origin.diffHeight = -1
-            right.diffHeight = 1
-        } else if (right.diffHeight == -1) {
-            origin.diffHeight = 0
-            right.diffHeight = 0
+        when (origin.diffHeight) {
+            -2 -> {
+                when (right.diffHeight) {
+                    0 -> {
+                        origin.diffHeight = -1
+                        right.diffHeight = 1
+                    }
+
+                    -1 -> {
+                        origin.diffHeight = 0
+                        right.diffHeight = 0
+                    }
+
+                    -2 -> {
+                        origin.diffHeight = 1
+                        right.diffHeight = 0
+                    }
+                }
+            }
+
+            -1 -> {
+                when (right.diffHeight) {
+                    0 -> {
+                        origin.diffHeight = 0
+                        right.diffHeight = 1
+                    }
+
+                    -1 -> {
+                        origin.diffHeight = 1
+                        right.diffHeight = 1
+                    }
+
+                    1 -> {
+                        origin.diffHeight = 0
+                        right.diffHeight = 2
+                    }
+                }
+            }
         }
+
         if (origin == root) {
             root = right
         }
         return right
-    }
-
-    public override fun remove(key: K): V? {
-        return TODO()
     }
 }
