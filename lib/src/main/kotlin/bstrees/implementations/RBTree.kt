@@ -8,6 +8,9 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         balanceTreeAfterInsert(currentVert)
         return returnResult
     }
+    private val red = RBVertex.Color.RED
+    private val black = RBVertex.Color.BLACK
+
     private fun rotateRight(vertex: RBVertex<K, V>?) {
         val parent = vertex?.parent
         val leftChild = vertex?.left
@@ -66,6 +69,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
             if (result > 0){
                 if(currentVertex.left == null){
                     val newVertex = RBVertex(key, value)
+                    newVertex.color = RBVertex.Color.RED
                     currentVertex.left = newVertex
                     newVertex.parent = currentVertex
                     size+= 1
@@ -75,6 +79,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
             } else if (result < 0){
                 if (currentVertex.right == null){
                     val newVertex = RBVertex(key, value)
+                    newVertex.color = RBVertex.Color.RED
                     currentVertex.right = newVertex
                     newVertex.parent = currentVertex
                     size += 1
@@ -91,18 +96,20 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
 
     private fun balanceTreeAfterInsert(vertex: RBVertex<K, V>){
         var parent = vertex.parent
-        val black = RBVertex.Color.BLACK
-        val red = RBVertex.Color.RED
-
-        val grandparent = parent?.parent
-        if (grandparent == null) {
-            parent?.color = black
-            return
-        }
-        if (parent == null) {
+        if(parent == null){
             vertex.color = black
             return
         }
+        if (parent.color == black) {
+            return
+        }
+        val grandparent = parent.parent
+
+        if (grandparent == null) {
+            parent.color = black
+            return
+        }
+
         val uncle = getVertexUncle(parent)
         if (uncle != null && uncle.color == red) {
             parent.color = black
@@ -125,23 +132,161 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
                 parent = vertex
             }
             rotateLeft(grandparent)
-            grandparent.color = red
-
             parent.color = black
+            grandparent.color = red
+        }
+    }
+    override fun remove(key : K) : V?{
+        var vertex = root
+        while (vertex != null && vertex.key != key) {
+            if (key < vertex.key) {
+                vertex = vertex.left
+            } else {
+                vertex = vertex.right
+            }
+        }
+        if (vertex == null) {
+            return null
+        }
+        val replacedVertex: RBVertex<K, V>?
+        val deletedVertexColor: RBVertex.Color
+        if (vertex.left == null || vertex.right == null) {
+            replacedVertex = deleteNullChild(vertex)
+            deletedVertexColor = vertex.color
+        }
+        else {
+            val minVertex = findMin(vertex.right!!)
+            minVertex.color = vertex.color
+            minVertex.left = vertex.left
+            minVertex.right = vertex.right
+            replaceChild(vertex.parent, vertex, minVertex)
+            replacedVertex = deleteNullChild(minVertex)
+            deletedVertexColor = minVertex.color
+        }
+
+        if (deletedVertexColor == RBVertex.Color.BLACK) {
+            balanceTreeAfterDelete(replacedVertex)
+            if (replacedVertex?.nullType == true) {
+                replaceChild(replacedVertex.parent, replacedVertex, null)
+            }
+        }
+        return replacedVertex?.value
+    }
+    private fun balanceTreeAfterDelete(vertex: RBVertex<K, V>?) {
+        if (vertex == root) {
+            vertex?.color = RBVertex.Color.BLACK
+            return
+        }
+        var brother = getBrother(vertex)
+
+        if (brother?.color === RBVertex.Color.RED) {
+            manageRedBrother(vertex, brother)
+            brother = getBrother(vertex) 
+        }
+        if (brother?.left?.color == RBVertex.Color.BLACK && brother.right?.color == RBVertex.Color.BLACK) {
+            brother.color = RBVertex.Color.RED
+            if (vertex?.parent?.color == RBVertex.Color.RED) {
+                vertex.parent?.color = RBVertex.Color.BLACK
+            } else {
+                balanceTreeAfterDelete(vertex?.parent)
+            }
+        } else {
+            manageBlackRedOne(vertex, brother)
+        }
+    }
+    private fun getBrother(vertex : RBVertex<K, V>?): RBVertex<K, V>? {
+        val parent = vertex?.parent
+        return if (vertex == parent?.left) {
+            parent?.right
+        } else if (vertex == parent?.right) {
+            parent?.left
+        } else {
+            throw IllegalStateException()
+        }
+    }
+    private fun manageBlackRedOne(vertex: RBVertex<K, V>?, argBrother: RBVertex<K, V>?) {
+        var brother = argBrother
+        if (vertex == vertex?.parent?.left && brother?.right?.color == black) {
+            brother.left?.color = black
+            brother.color = red
+            rotateRight(brother)
+            brother = vertex?.parent?.right
+        } else if (vertex != vertex?.parent?.left&& brother?.left?.color == black) {
+            brother.right?.color = black
+            brother.color = red
+            rotateLeft(brother)
+            brother = vertex?.parent?.left
+        }
+        brother?.color = vertex?.parent!!.color
+        vertex.parent?.color = black
+        if (vertex == vertex.parent?.left) {
+            brother?.right?.color = black
+            rotateLeft(vertex.parent)
+        } else {
+            brother?.left?.color = black
+            rotateRight(vertex.parent)
+        }
+    }
+    private fun manageRedBrother(vertex: RBVertex<K, V>?, brother: RBVertex<K, V>) {
+        brother.color = RBVertex.Color.BLACK
+        vertex?.parent?.color = RBVertex.Color.RED
+        if (vertex === vertex?.parent?.left) {
+            rotateLeft(vertex?.parent)
+        } else {
+            rotateRight(vertex?.parent)
         }
     }
 
-    private fun getVertexUncle(parent: RBVertex<K, V>?): RBVertex<K, V>? {
-        val grandparent = parent?.parent
-        return if (grandparent?.right == parent) {
-            grandparent?.right
-        } else if (grandparent?.left == parent) {
-            grandparent?.left
+    private fun replaceChild(parent: RBVertex<K, V>?, oldChild: RBVertex<K, V>, newChild: RBVertex<K, V>?) {
+        if (parent == null) {
+            root = newChild
+        } else if (parent.left === oldChild) {
+            parent.left = newChild
+        } else if (parent.right === oldChild) {
+            parent.right = newChild
+        } else {
+            throw IllegalStateException()
+        }
+        if (newChild != null) {
+            newChild.parent = parent
+        }
+    }
+    private fun deleteNullChild(vertex: RBVertex<K, V>): RBVertex<K, V>? {
+        if (vertex.left != null) {
+            replaceChild(vertex.parent, vertex, vertex.left)
+            return vertex.left
+        } else if (vertex.right != null) {
+            replaceChild(vertex.parent, vertex, vertex.right)
+            return vertex.right
+        } else {
+            var newChild : RBVertex<K, V>? = RBVertex(vertex.key, vertex.value)
+            if(vertex.color == RBVertex.Color.BLACK) {
+                newChild?.nullType = true
+            }
+            else{
+                newChild = null
+            }
+            replaceChild(vertex.parent, vertex, newChild)
+            return newChild
+        }
+    }
+    private fun findMin(argVertex: RBVertex<K, V>): RBVertex<K, V> {
+        var vertex = argVertex
+        while (vertex.left != null) {
+            vertex = vertex.left!!
+        }
+        return vertex
+    }
+
+
+    private fun getVertexUncle(parent: RBVertex<K, V>): RBVertex<K, V>? {
+        val grandparent = parent.parent
+        return if (grandparent?.left == parent) {
+            grandparent.right
+        } else if (grandparent?.right == parent) {
+            grandparent.left
         } else {
             throw IllegalStateException("Grandparent/Parent dependency mistake")
         }
-    }
-    override fun remove(key: K): V?{
-        return null
     }
 }
