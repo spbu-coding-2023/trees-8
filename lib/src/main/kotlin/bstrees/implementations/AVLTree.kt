@@ -1,7 +1,7 @@
 package bstrees.implementations
 
 import bstrees.templates.BalanceBSTreeTemplate
-
+                                                                                                    
 class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
     public override operator fun set(
         key: K,
