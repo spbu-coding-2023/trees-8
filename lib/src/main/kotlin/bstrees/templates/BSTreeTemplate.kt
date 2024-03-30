@@ -2,7 +2,6 @@ package bstrees.templates
 
 import java.util.Stack
 
-                                                                                                                        
 abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> {
     var root: Vertex_t? = null
         protected set
@@ -20,19 +19,13 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
      *
      * @return the previous value associated with the key, or `null` if the key was not present in the tree.
      */
-    public abstract operator fun set(
-        key: K,
-        value: V,
-    ): V?
+    public abstract operator fun set(key: K, value: V): V?
 
     /**
      * Associates the specified value with the specified key if this key is not in the tree.
      * @return [true] if this key is not in the tree, otherwise [false]
      */
-    public fun setIfAbsent(
-        key: K,
-        value: V,
-    ): Boolean {
+    public fun setIfAbsent(key: K, value: V): Boolean {
         if (get(key) == null) {
             set(key, value)
             return true
@@ -50,10 +43,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
     /**
      * Returns the value corresponding to the given [key], or [defaultValue] if such a key is not present in the map.
      */
-    public fun getOrDefault(
-        key: K,
-        defaultValue: Any,
-    ): Any {
+    public fun getOrDefault(key: K, defaultValue: Any): Any {
         return get(key) ?: defaultValue
     }
 
@@ -62,10 +52,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
      * Otherwise, calls the [set] function,
      * set [defaultValue] into the tree under the given key and returns the call result.
      */
-    public fun getOrSet(
-        key: K,
-        defaultValue: V,
-    ): V? {
+    public fun getOrSet(key: K, defaultValue: V): V? {
         return get(key) ?: set(key, defaultValue)
     }
 

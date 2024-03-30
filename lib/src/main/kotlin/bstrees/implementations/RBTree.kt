@@ -203,10 +203,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         }
     }
 
-    private fun manageBlackRedOne(
-        vertex: RBVertex<K, V>?,
-        argBrother: RBVertex<K, V>?,
-    ) {
+    private fun manageBlackRedOne(vertex: RBVertex<K, V>?, argBrother: RBVertex<K, V>?) {
         var brother = argBrother
         if (vertex == vertex?.parent?.left && brother?.right?.color == black) {
             brother.left?.color = black
