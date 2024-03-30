@@ -117,7 +117,7 @@ class AVLTreeTest {
     }
 
     @Test
-    fun `remove with left vertex`() {
+    fun `remove root of left subtree with existing left vertex`() {
         val keys = intArrayOf(0, -1, 1, -2)
         for (key in keys) avlTree[key] = key
         avlTree.remove(-1)
@@ -128,6 +128,21 @@ class AVLTreeTest {
             expectedResult,
             actualResult,
             "Tree must save all other vertices after remove vertex with existing left vertex",
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `remove root of right subtree with existing left vertex`() {
+        val keys = intArrayOf(0, -1, 2, 1)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(2)
+
+        val expectedResult = arrayOf(0, -1, null, 1)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Tree must save all other vertices after remove root of right subtree with existing left vertex"
         )
         checkTreeInvariant(avlTree.root)
     }
@@ -167,7 +182,7 @@ class AVLTreeTest {
     }
 
     @Test
-    fun `remove with necessary double rotate`() {
+    fun `remove with double rotate`() {
         val keys = intArrayOf(5, 0, 7, -1, 2, 6, 9, -2, 1, 3, 8, 4)
         for (key in keys) avlTree[key] = key
         avlTree.remove(7)
@@ -319,5 +334,91 @@ class AVLTreeTest {
 //             1   5   9             1   5                    0  2  5  8
 //            / \ / \               / \ / \                        / \
 //           0  2 4  6             0  2 4  6                      4   6
+    }
+
+    @Test
+    fun `rotate right-left, right diffHeight is 1, right-left diffHeight is 1`() {
+        val keys = intArrayOf(1, 0, 4, 3, 5, 2)
+        for (key in keys) avlTree[key] = key
+
+        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after right-left rotate with right.left.diffHeight = 1"
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `rotate right-left, right diffHeight is 1, right-left diffHeight is 0`() {
+        val keys = intArrayOf(2, 1, 6, 0, 4, 7, 3, 5)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(0)
+
+        val expectedResult: Array<Int?> = arrayOf(2, 1, 6, null, 4, 7, 3, 5)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after right-left rotate with right.left.diffHeight = 0"
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `rotate right-left, right diffHeight is 1, right-left diffHeight is -1`() {
+        val keys = intArrayOf(1, 0, 4, 2, 5, 3)
+        for (key in keys) avlTree[key] = key
+
+        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after right-left rotate with right.left.diffHeight = -1"
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `rotate left-right, left diffHeight is -1, left-right diffHeight is -1`() {
+        val keys = intArrayOf(4, 1, 5, 0, 2, 3)
+        for (key in keys) avlTree[key] = key
+
+        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after left-right rotate with left.right.diffHeight = -1"
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `rotate left-right, left diffHeight is -1, left-right diffHeight is 0`() {
+        val keys = intArrayOf(5, 1, 6, 0, 3, 7, 2, 4)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(7)
+
+        val expectedResult = arrayOf(5, 1, 6, 0, 3, null, 2, 4)
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after left-right rotate with left.right.diffHeight = 0"
+        )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `rotate left-right, left diffHeight is -1, left-right diffHeight is 1`() {
+        val keys = intArrayOf(4, 1, 5, 0, 3, 2)
+        for (key in keys) avlTree[key] = key
+
+        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
+        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        assertContentEquals(
+            expectedResult, actualResult,
+            "Get must return corresponding values after left-right rotate with left.right.diffHeight = 1"
+        )
+        checkTreeInvariant(avlTree.root)
     }
 }
