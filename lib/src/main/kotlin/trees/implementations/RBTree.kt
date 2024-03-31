@@ -142,6 +142,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
                 vertex = vertex.right
             }
         }
+        size -= 1
         if (vertex == null) {
             return null
         }
