@@ -3,10 +3,7 @@ package bstrees.implementations
 import bstrees.templates.BalanceBSTreeTemplate
 
 class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
-    public override operator fun set(
-        key: K,
-        value: V,
-    ): V? {
+    public override operator fun set(key: K, value: V): V? {
         val (currentVert, oldValue) = setWithoutBalance(key, value)
         if (oldValue == null) {
             size += 1
@@ -21,10 +18,7 @@ class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
      * Returns: a pair of set vertex and old value.
      * If key didn't exist, the returned value is null.
      */
-    private fun setWithoutBalance(
-        key: K,
-        value: V,
-    ): Pair<AVLVertex<K, V>, V?> {
+    private fun setWithoutBalance(key: K, value: V): Pair<AVLVertex<K, V>, V?> {
         if (root == null) {
             val newVertex = AVLVertex(key, value)
             root = newVertex

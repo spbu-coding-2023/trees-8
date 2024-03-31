@@ -3,10 +3,7 @@ package bstrees.implementations
 import bstrees.templates.BalanceBSTreeTemplate
 
 class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>() {
-    override fun set(
-        key: K,
-        value: V,
-    ): V? {
+    override fun set(key: K, value: V): V? {
         val (currentVert, returnResult) = unbalancedSet(key, value)
         balanceTreeAfterInsert(currentVert)
         return returnResult
@@ -57,45 +54,37 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         }
     }
 
-    private fun unbalancedSet(
-        key: K,
-        value: V,
-    ): Pair<RBVertex<K, V>, V?> {
-        if (root == null)
-            {
-                val newVertex = RBVertex(key, value)
-                root = newVertex
-                size += 1
-                return Pair(newVertex, null)
-            }
+    private fun unbalancedSet(key: K, value: V): Pair<RBVertex<K, V>, V?> {
+        if (root == null) {
+            val newVertex = RBVertex(key, value)
+            root = newVertex
+            size += 1
+            return Pair(newVertex, null)
+        }
         var currentVertex = root ?: throw IllegalStateException()
         while (true) {
             val result = currentVertex.key.compareTo(key)
-            if (result > 0)
-                {
-                    if (currentVertex.left == null)
-                        {
-                            val newVertex = RBVertex(key, value)
-                            newVertex.color = RBVertex.Color.RED
-                            currentVertex.left = newVertex
-                            newVertex.parent = currentVertex
-                            size += 1
-                            return Pair(newVertex, null)
-                        }
-                    currentVertex = currentVertex.left ?: throw IllegalStateException()
-                } else if (result < 0)
-                {
-                    if (currentVertex.right == null)
-                        {
-                            val newVertex = RBVertex(key, value)
-                            newVertex.color = RBVertex.Color.RED
-                            currentVertex.right = newVertex
-                            newVertex.parent = currentVertex
-                            size += 1
-                            return Pair(newVertex, null)
-                        }
-                    currentVertex = currentVertex.right ?: throw IllegalStateException()
-                } else {
+            if (result > 0) {
+                if (currentVertex.left == null) {
+                    val newVertex = RBVertex(key, value)
+                    newVertex.color = RBVertex.Color.RED
+                    currentVertex.left = newVertex
+                    newVertex.parent = currentVertex
+                    size += 1
+                    return Pair(newVertex, null)
+                }
+                currentVertex = currentVertex.left ?: throw IllegalStateException()
+            } else if (result < 0) {
+                if (currentVertex.right == null) {
+                    val newVertex = RBVertex(key, value)
+                    newVertex.color = RBVertex.Color.RED
+                    currentVertex.right = newVertex
+                    newVertex.parent = currentVertex
+                    size += 1
+                    return Pair(newVertex, null)
+                }
+                currentVertex = currentVertex.right ?: throw IllegalStateException()
+            } else {
                 val oldValue = currentVertex.value
                 currentVertex.value = value
                 return Pair(currentVertex, oldValue)
@@ -103,13 +92,12 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         }
     }
 
-    private fun balanceTreeAfterInsert(vertex: RBVertex<K, V>)  {
+    private fun balanceTreeAfterInsert(vertex: RBVertex<K, V>) {
         var parent = vertex.parent
-        if (parent == null)
-            {
-                vertex.color = black
-                return
-            }
+        if (parent == null) {
+            vertex.color = black
+            return
+        }
         if (parent.color == black) {
             return
         }
@@ -145,7 +133,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         }
     }
 
-    override fun remove(key: K): V?  {
+    override fun remove(key: K): V? {
         var vertex = root
         while (vertex != null && vertex.key != key) {
             if (key < vertex.key) {
@@ -215,10 +203,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         }
     }
 
-    private fun manageBlackRedOne(
-        vertex: RBVertex<K, V>?,
-        argBrother: RBVertex<K, V>?,
-    ) {
+    private fun manageBlackRedOne(vertex: RBVertex<K, V>?, argBrother: RBVertex<K, V>?) {
         var brother = argBrother
         if (vertex == vertex?.parent?.left && brother?.right?.color == black) {
             brother.left?.color = black
@@ -242,10 +227,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         }
     }
 
-    private fun manageRedBrother(
-        vertex: RBVertex<K, V>?,
-        brother: RBVertex<K, V>,
-    ) {
+    private fun manageRedBrother(vertex: RBVertex<K, V>?, brother: RBVertex<K, V>) {
         brother.color = RBVertex.Color.BLACK
         vertex?.parent?.color = RBVertex.Color.RED
         if (vertex === vertex?.parent?.left) {
@@ -255,11 +237,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         }
     }
 
-    private fun replaceChild(
-        parent: RBVertex<K, V>?,
-        oldChild: RBVertex<K, V>,
-        newChild: RBVertex<K, V>?,
-    ) {
+    private fun replaceChild(parent: RBVertex<K, V>?, oldChild: RBVertex<K, V>, newChild: RBVertex<K, V>?) {
         if (parent == null) {
             root = newChild
         } else if (parent.left === oldChild) {

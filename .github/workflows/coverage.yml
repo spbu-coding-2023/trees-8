@@ -17,8 +17,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-           java-version: '17'
-           distribution: 'oracle'
+          java-version: '17'
+          distribution: 'temurin'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
@@ -29,5 +29,16 @@ jobs:
       - name: Jacoco Test Coverage Report
         uses: cicirello/jacoco-badge-generator@v2.8.0
         with:
-            generate-branches-badge: true
-            jacoco-csv-file: lib/build/jacoco/report.csv
+          generate-branches-badge: true
+          jacoco-csv-file: lib/build/jacoco/report.csv
+
+      - name: Add coverage to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          paths: |
+            ${{ github.workspace }}/**/build/reports/jacoco/prodNormalDebugCoverage/prodNormalDebugCoverage.xml,
+            ${{ github.workspace }}/**/build/reports/jacoco/**/debugCoverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 40
+          update-comment: true

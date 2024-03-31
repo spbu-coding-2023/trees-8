@@ -2,5 +2,6 @@ Results of ktlint linter (version 1.2.1)
 See documentation on https://megalinter.io/7.10.0/descriptors/kotlin_ktlint/
 -----------------------------------------------
 
+✅ [SUCCESS] lib/src/main/kotlin/bstrees/implementations/AVLTree.kt
 ✅ [SUCCESS] lib/src/main/kotlin/bstrees/implementations/RBTree.kt - FIXED
-✅ [SUCCESS] lib/src/main/kotlin/bstrees/implementations/Vertices.kt - FIXED
+✅ [SUCCESS] lib/src/main/kotlin/bstrees/templates/BSTreeTemplate.kt - FIXED
