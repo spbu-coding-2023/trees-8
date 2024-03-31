@@ -1,6 +1,6 @@
-package trees
+package trees.bstest
 
-import bstrees.implementations.SimpleTree
+import trees.implementations.SimpleTree
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
