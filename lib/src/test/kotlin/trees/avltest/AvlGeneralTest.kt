@@ -1,21 +1,20 @@
-package trees.AVLTest
+package trees.avlTest
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import trees.implementations.AVLTree
+import trees.implementations.AvlTree
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import trees.AVLTest.AVLSpecificTests.Companion.checkTreeInvariant
-import kotlin.math.exp
+import trees.avlTest.AvlSpecificTest.Companion.checkTreeInvariant
 import kotlin.test.assertIs
 
-class AVLGeneralTest {
-    private lateinit var avlTree: AVLTree<Int, Int>
+class AvlGeneralTest {
+    private lateinit var avlTree: AvlTree<Int, Int>
 
     @BeforeEach
     fun setup() {
-        avlTree = AVLTree<Int, Int>()
+        avlTree = AvlTree<Int, Int>()
     }
 
     @Test
