@@ -11,6 +11,8 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    jacoco
+    `jacoco-report-aggregation`
 }
 
 repositories {
@@ -44,4 +46,25 @@ java {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDirectory = layout.buildDirectory.dir("lib/build/jacoco").get().asFile
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required = true
+        csv.required = true
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml").get().asFile
+        csv.outputLocation = layout.buildDirectory.file("jacoco/report.csv")
+    }
 }
