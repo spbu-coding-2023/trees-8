@@ -80,7 +80,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testRemoveNonExistentKey(){
+    fun testRemoveNonExistentKey() {
         simpleTree[0] = 15
         val actualResult = simpleTree.remove(3)
         val expectedResult = null
@@ -122,6 +122,19 @@ class BSTreeTest {
         simpleTree.remove(2)
 
         val expectedResult: Array<Int?> = arrayOf(0, -1, null, 1, 3)
+        val actualResult = Array(keys.size) { i -> simpleTree[keys[i]] }
+        assertContentEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun testRemoveRigthRootWithoutChilds() {
+        val keys = intArrayOf(0, -1, 2)
+        for (key in keys) {
+            simpleTree[key] = key
+        }
+        simpleTree.remove(2)
+
+        val expectedResult: Array<Int?> = arrayOf(0, -1, null)
         val actualResult = Array(keys.size) { i -> simpleTree[keys[i]] }
         assertContentEquals(expectedResult, actualResult)
     }
