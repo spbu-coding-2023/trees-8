@@ -2,7 +2,7 @@ package trees.implementations
 
 import trees.templates.BalanceBSTreeTemplate
 
-class AVLTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
+class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
     public override operator fun set(key: K, value: V): V? {
         val (currentVert, oldValue) = setWithoutBalance(key, value)
         if (oldValue == null) {
