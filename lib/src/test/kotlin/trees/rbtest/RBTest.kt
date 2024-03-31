@@ -1,4 +1,4 @@
-package trees.avlTest
+package trees.rbtest
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
