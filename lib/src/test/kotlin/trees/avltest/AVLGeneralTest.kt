@@ -1,4 +1,4 @@
-package trees.AvlTest
+package trees.avlTest
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.assertThrows
 import trees.implementations.AvlTree
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import trees.AvlTest.AvlSpecificTests.Companion.checkTreeInvariant
+import trees.avlTest.AvlSpecificTests.Companion.checkTreeInvariant
 import kotlin.test.assertIs
 
 class AvlGeneralTest {

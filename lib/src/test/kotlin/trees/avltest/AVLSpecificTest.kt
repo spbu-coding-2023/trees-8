@@ -1,4 +1,4 @@
-package trees.AvlTest
+package trees.avlTest
 
 import trees.implementations.AvlTree
 import trees.implementations.AVLVertex
