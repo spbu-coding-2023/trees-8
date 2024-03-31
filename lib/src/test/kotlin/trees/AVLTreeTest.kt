@@ -348,6 +348,14 @@ class AVLTreeTest {
             "Get must return corresponding values after right-left rotate with right.left.diffHeight = 1"
         )
         checkTreeInvariant(avlTree.root)
+
+//                1                    1                  3
+//               / \                  / \                / \
+//              0   4                0   3              1   4
+//                 / \      -->         / \     -->    / \   \
+//                3   5                2   4          0   2   5
+//               /                          \
+//              2                            5
     }
 
     @Test
