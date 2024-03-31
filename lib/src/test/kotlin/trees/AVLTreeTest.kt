@@ -141,8 +141,9 @@ class AVLTreeTest {
         val expectedResult = arrayOf(0, -1, null, 1)
         val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
-            expectedResult, actualResult,
-            "Tree must save all other vertices after remove root of right subtree with existing left vertex"
+            expectedResult,
+            actualResult,
+            "Tree must save all other vertices after remove root of right subtree with existing left vertex",
         )
         checkTreeInvariant(avlTree.root)
     }
@@ -344,8 +345,9 @@ class AVLTreeTest {
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
         val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
-            expectedResult, actualResult,
-            "Get must return corresponding values after right-left rotate with right.left.diffHeight = 1"
+            expectedResult,
+            actualResult,
+            "Get must return corresponding values after right-left rotate with right.left.diffHeight = 1",
         )
         checkTreeInvariant(avlTree.root)
 
@@ -367,8 +369,9 @@ class AVLTreeTest {
         val expectedResult: Array<Int?> = arrayOf(2, 1, 6, null, 4, 7, 3, 5)
         val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
-            expectedResult, actualResult,
-            "Get must return corresponding values after right-left rotate with right.left.diffHeight = 0"
+            expectedResult,
+            actualResult,
+            "Get must return corresponding values after right-left rotate with right.left.diffHeight = 0",
         )
         checkTreeInvariant(avlTree.root)
     }
@@ -381,8 +384,9 @@ class AVLTreeTest {
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
         val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
-            expectedResult, actualResult,
-            "Get must return corresponding values after right-left rotate with right.left.diffHeight = -1"
+            expectedResult,
+            actualResult,
+            "Get must return corresponding values after right-left rotate with right.left.diffHeight = -1",
         )
         checkTreeInvariant(avlTree.root)
     }
@@ -395,8 +399,9 @@ class AVLTreeTest {
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
         val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
-            expectedResult, actualResult,
-            "Get must return corresponding values after left-right rotate with left.right.diffHeight = -1"
+            expectedResult,
+            actualResult,
+            "Get must return corresponding values after left-right rotate with left.right.diffHeight = -1",
         )
         checkTreeInvariant(avlTree.root)
     }
@@ -410,8 +415,9 @@ class AVLTreeTest {
         val expectedResult = arrayOf(5, 1, 6, 0, 3, null, 2, 4)
         val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
-            expectedResult, actualResult,
-            "Get must return corresponding values after left-right rotate with left.right.diffHeight = 0"
+            expectedResult,
+            actualResult,
+            "Get must return corresponding values after left-right rotate with left.right.diffHeight = 0",
         )
         checkTreeInvariant(avlTree.root)
     }
@@ -424,8 +430,9 @@ class AVLTreeTest {
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
         val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
-            expectedResult, actualResult,
-            "Get must return corresponding values after left-right rotate with left.right.diffHeight = 1"
+            expectedResult,
+            actualResult,
+            "Get must return corresponding values after left-right rotate with left.right.diffHeight = 1",
         )
         checkTreeInvariant(avlTree.root)
     }
