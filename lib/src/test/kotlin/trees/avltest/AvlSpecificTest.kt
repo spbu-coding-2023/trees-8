@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
-class AvlSpecificTests {
+class AvlSpecificTest {
     private lateinit var avlTree: AvlTree<Int, Int>
 
     /**
