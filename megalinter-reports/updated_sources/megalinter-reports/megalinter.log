@@ -11,8 +11,8 @@ The MegaLinter documentation can be found at:
 ::group::MegaLinter initialization (expand for details)
 MegaLinter will analyze workspace [/github/workspace]
 GITHUB_REPOSITORY: spbu-coding-2023/trees-8
-GITHUB_REF: refs/pull/14/merge
-GITHUB_RUN_ID: 8497650337
+GITHUB_REF: refs/pull/18/merge
+GITHUB_RUN_ID: 8500266858
 
 
 CLOJURE_CLJSTYLE has been temporary disabled in MegaLinter, please use a previous MegaLinter version or wait for the next one !
@@ -23,28 +23,29 @@ To receive reports as email, please set variable EMAIL_REPORTER_EMAIL
 ::group::MegaLinter now collects the files to analyse (expand for details)
 Listing updated files in [/github/workspace] using git diff.
 Modified files:
-lib/src/test/kotlin/trees/AVLTreeTest.kt
+lib/src/main/kotlin/trees/implementations/RBTree.kt
+lib/src/test/kotlin/trees/rbtest/RBTest.kt
 megalinter-reports/megalinter.log
 - File extensions: .kt, .kts
 - Excluding .gitignored files [0]: 
-Kept [1] files on [2] found files
+Kept [2] files on [3] found files
 
 +----MATCHING LINTERS-+----------+----------------+------------+
 | Descriptor | Linter | Criteria | Matching files | Format/Fix |
 +------------+--------+----------+----------------+------------+
-| KOTLIN     | ktlint | .kt|.kts | 1              | yes        |
+| KOTLIN     | ktlint | .kt|.kts | 2              | yes        |
 +------------+--------+----------+----------------+------------+
 ::endgroup::
-::group::[32m✅ Linted [KOTLIN] files with [ktlint] successfully - (1.88s)[0m (expand for details)
+::group::[32m✅ Linted [KOTLIN] files with [ktlint] successfully - (2.95s)[0m (expand for details)
 - Using [ktlint v1.2.1] https://megalinter.io/7.10.0/descriptors/kotlin_ktlint
 - MegaLinter key: [KOTLIN_KTLINT]
 - Rules config: identified by [ktlint]
-- Number of files analyzed: [1]
+- Number of files analyzed: [2]
 ::endgroup::
 
 +----SUMMARY-+--------+------+-------+-------+--------+--------------+
 | Descriptor | Linter | Mode | Files | Fixed | Errors | Elapsed time |
 +------------+--------+------+-------+-------+--------+--------------+
-| ✅ KOTLIN  | ktlint | file |     1 |     1 |      0 |        1.88s |
+| ✅ KOTLIN  | ktlint | file |     2 |     1 |      0 |        2.95s |
 +------------+--------+------+-------+-------+--------+--------------+
 
