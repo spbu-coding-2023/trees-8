@@ -1,4 +1,4 @@
-package bstrees.templates
+package trees.templates
 
 abstract class BalanceBSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> :
     BSTreeTemplate<K, V, Vertex_t>()

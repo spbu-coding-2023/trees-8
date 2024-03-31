@@ -1,6 +1,6 @@
-package bstrees.implementations
+package trees.implementations
 
-import bstrees.templates.BalanceBSTreeTemplate
+import trees.templates.BalanceBSTreeTemplate
 
 class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>() {
     override fun set(key: K, value: V): V? {

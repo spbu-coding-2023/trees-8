@@ -1,4 +1,4 @@
-package bstrees.templates
+package trees.templates
 
 import java.util.Stack
 
@@ -50,7 +50,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
     /**
      * Returns the value for the given [key] if the value is present and not `null`.
      * Otherwise, calls the [set] function,
-     * set [defaultValue] into the tree under the given key and returns the call result.
+     * set [defaultValue] into the tree under the given key and returns null.
      */
     public fun getOrSet(key: K, defaultValue: V): V? {
         return get(key) ?: set(key, defaultValue)
