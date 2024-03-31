@@ -1,6 +1,6 @@
-package bstrees.implementations
+package trees.implementations
 
-import bstrees.templates.BSTreeTemplate
+import trees.templates.BSTreeTemplate
 
 class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>>() {
     override fun remove(key: K): V? {

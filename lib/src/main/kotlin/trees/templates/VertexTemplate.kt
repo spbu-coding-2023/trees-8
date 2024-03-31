@@ -1,4 +1,4 @@
-package bstrees.templates
+package trees.templates
 
 abstract class VertexTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>>(key: K, value: V) {
     var key = key

@@ -1,6 +1,6 @@
-package bstrees.implementations
+package trees.implementations
 
-import bstrees.templates.VertexTemplate
+import trees.templates.VertexTemplate
 
 class SimpleVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, SimpleVertex<K, V>>(key, value)
 
