@@ -3,7 +3,7 @@ package trees.implementations
 import trees.templates.BalanceBSTreeTemplate
 
 class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
-    public override operator fun set(key: K, value: V): V? {
+    override operator fun set(key: K, value: V): V? {
         val (currentVert, oldValue) = setWithoutBalance(key, value)
         if (oldValue == null) {
             size += 1
@@ -43,7 +43,7 @@ class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
                     newVertex.parent = cur
                     return Pair(newVertex, null)
                 }
-                cur = cur.right ?: throw IllegalStateException("Case when cur.rightt is null is processed above")
+                cur = cur.right ?: throw IllegalStateException("Case when cur.right is null is processed above")
             } else {
                 val oldValue = cur.value
                 cur.value = value
@@ -73,7 +73,7 @@ class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         }
     }
 
-    public override fun remove(key: K): V? {
+    override fun remove(key: K): V? {
         val toRemove = vertByKey(key) ?: return null
         val oldValue = toRemove.value
         removeVert(toRemove)

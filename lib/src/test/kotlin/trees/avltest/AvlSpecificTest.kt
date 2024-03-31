@@ -1,4 +1,4 @@
-package trees.avlTest
+package trees.avltest
 
 import trees.implementations.AvlTree
 import trees.implementations.AVLVertex
@@ -11,12 +11,12 @@ import kotlin.test.assertEquals
 class AvlSpecificTest {
     private lateinit var avlTree: AvlTree<Int, Int>
 
-    /**
-     * Traverse all vertices of the tree and asserts that their diffHeights are
-     * equal to real height difference of the subtrees.
-     * @return height of the subtree with the root at the specified [vertex]
-     */
     companion object {
+        /**
+         * Traverse all vertices of the tree and asserts that their diffHeights are
+         * equal to real height difference of the subtrees.
+         * @return height of the subtree with the root at the specified [vertex]
+         */
         fun checkTreeInvariant(vertex: AVLVertex<*, *>?): Int {
             if (vertex == null) return 0
 
@@ -38,7 +38,7 @@ class AvlSpecificTest {
 
     @BeforeEach
     fun setup() {
-        avlTree = AvlTree<Int, Int>()
+        avlTree = AvlTree()
     }
 
     @Test
@@ -48,7 +48,7 @@ class AvlSpecificTest {
         avlTree.remove(7)
 
         val expectedResult = arrayOf(5, 0, null, -1, 2, 6, 9, -2, 1, 3, 8, 4)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -65,7 +65,7 @@ class AvlSpecificTest {
 
         assertTrue(avlTree.root != null)
         val expectedResult = arrayOf(null, 1, 6, 0, 3, 5, 2)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -80,7 +80,7 @@ class AvlSpecificTest {
         for (key in keys) avlTree[key] = key
 
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -98,13 +98,13 @@ class AvlSpecificTest {
     }
 
     @Test
-    fun `rotate left, right diffHeiht = 0`() {
+    fun `rotate left, right diffHeight = 0`() {
         val keys = intArrayOf(0, -1, 4, 2, 6, -2, 1, 3, 5, 7)
         for (key in keys) avlTree[key] = key
         avlTree.remove(-2)
 
         val expectedResult = arrayOf(0, -1, 4, 2, 6, null, 1, 3, 5, 7)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -126,7 +126,7 @@ class AvlSpecificTest {
         for (key in keys) avlTree[key] = key
 
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -173,7 +173,7 @@ class AvlSpecificTest {
         for (key in keys) avlTree[key] = key
 
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -197,7 +197,7 @@ class AvlSpecificTest {
         avlTree.remove(0)
 
         val expectedResult: Array<Int?> = arrayOf(2, 1, 6, null, 4, 7, 3, 5)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -212,7 +212,7 @@ class AvlSpecificTest {
         for (key in keys) avlTree[key] = key
 
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -227,7 +227,7 @@ class AvlSpecificTest {
         for (key in keys) avlTree[key] = key
 
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -243,7 +243,7 @@ class AvlSpecificTest {
         avlTree.remove(7)
 
         val expectedResult = arrayOf(5, 1, 6, 0, 3, null, 2, 4)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -258,7 +258,7 @@ class AvlSpecificTest {
         for (key in keys) avlTree[key] = key
 
         val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,

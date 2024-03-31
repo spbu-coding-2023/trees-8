@@ -1,4 +1,4 @@
-package trees.avlTest
+package trees.avltest
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.assertThrows
 import trees.implementations.AvlTree
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import trees.avlTest.AvlSpecificTest.Companion.checkTreeInvariant
+import trees.avltest.AvlSpecificTest.Companion.checkTreeInvariant
 import kotlin.test.assertIs
 
 class AvlGeneralTest {
@@ -14,7 +14,7 @@ class AvlGeneralTest {
 
     @BeforeEach
     fun setup() {
-        avlTree = AvlTree<Int, Int>()
+        avlTree = AvlTree()
     }
 
     @Test
@@ -24,7 +24,7 @@ class AvlGeneralTest {
             avlTree[i] = -i
         }
         val expectedGet: Array<Int?> = Array(5, { i -> -i })
-        val actualGet: Array<Int?> = Array(5, { i -> avlTree.get(i) })
+        val actualGet: Array<Int?> = Array(5, { i -> avlTree[i] })
         assertContentEquals(expectedGet, actualGet, "Get method must return the value associated with the key")
         val expectedSize = 5
         val actualSize = avlTree.size
@@ -125,7 +125,7 @@ class AvlGeneralTest {
         avlTree.remove(-1)
 
         val expectedResult = arrayOf(0, null, 1, -2)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -141,7 +141,7 @@ class AvlGeneralTest {
         avlTree.remove(2)
 
         val expectedResult = arrayOf(0, -1, null, 1)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -157,7 +157,7 @@ class AvlGeneralTest {
         avlTree.remove(3)
 
         val expectedResult = arrayOf(0, -1, null, 1, 2)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -173,7 +173,7 @@ class AvlGeneralTest {
         avlTree.remove(3)
 
         val expectedResult = arrayOf(0, -1, null, -2, 1, 6, 4, 7)
-        val actualResult = Array<Int?>(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -188,7 +188,7 @@ class AvlGeneralTest {
     fun `simple iteration`() {
         val keys = intArrayOf(1, 7, 4, 9, 2, -44, 3)
         val values = intArrayOf(19, 14, 31, 17, 12, -34, 0)
-        for (i in 0..<keys.size) {
+        for (i in keys.indices) {
             avlTree[keys[i]] = values[i]
         }
 
