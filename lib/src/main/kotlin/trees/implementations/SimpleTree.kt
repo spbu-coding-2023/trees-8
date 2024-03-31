@@ -48,7 +48,7 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
 
         var current = root ?: throw IllegalStateException("Can't be null, there was a check above")
         while (true) {
-            val result = current.key.compareTo(key)
+            val result = key.compareTo(current.key)
             if (result < 0) {
                 if (current.left == null) {
                     val newVertex = SimpleVertex(key, value)
