@@ -8,8 +8,10 @@ import bstrees.implementations.AVLVertex
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 class AVLTreeTest {
     private lateinit var avlTree: AVLTree<Int, Int>
@@ -93,6 +95,19 @@ class AVLTreeTest {
             "Size of the tree must not change after overwriting an existing key",
         )
         checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `set return`() {
+        assertEquals(
+            avlTree.set(44, -37), null,
+            "Set must return null if set key was not present in the tree"
+        )
+
+        assertEquals(
+            avlTree.set(44, 152), -37,
+            "Set must return previous value associated with the key"
+        )
     }
 
     @Test
@@ -227,21 +242,6 @@ class AVLTreeTest {
             actualResult,
             "Remove a non-existent key must return null",
         )
-    }
-
-    @Test
-    fun `simple iteration`() {
-        val keys = intArrayOf(1, 7, 4, 9, 2, -44, 3)
-        val values = intArrayOf(19, 14, 31, 17, 12, -34, 0)
-        for (i in 0..<keys.size) {
-            avlTree[keys[i]] = values[i]
-        }
-
-        val expectedResult: Array<Int?> = arrayOf(-34, 19, 12, 0, 31, 14, 17)
-        val iterator = avlTree.iterator()
-        val actualResult: Array<Int?> = Array(7, { iterator.next().second })
-        assertContentEquals(expectedResult, actualResult, "Iterator must return vertices in keys order")
-        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -434,6 +434,150 @@ class AVLTreeTest {
             actualResult,
             "Get must return corresponding values after left-right rotate with left.right.diffHeight = 1",
         )
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `simple iteration`() {
+        val keys = intArrayOf(1, 7, 4, 9, 2, -44, 3)
+        val values = intArrayOf(19, 14, 31, 17, 12, -34, 0)
+        for (i in 0..<keys.size) {
+            avlTree[keys[i]] = values[i]
+        }
+
+        val expectedResult: Array<Int?> = arrayOf(-34, 19, 12, 0, 31, 14, 17)
+        val iterator = avlTree.iterator()
+        val actualResult: Array<Int?> = Array(7, { iterator.next().second })
+        assertContentEquals(expectedResult, actualResult, "Iterator must return vertices in keys order")
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun `iteration outOfBonds exception`() {
+        val keys = intArrayOf(1, 3, 5, 7, 9, 12, 342, -488)
+        for (key in keys) avlTree[key] = key
+        val iterator = avlTree.iterator()
+        for (key in keys) {
+            assertIs<Pair<Int, Int>>(
+                iterator.next(), "iterator.next() must return Pair<K,V> while all keys is not bypassed"
+            )
+        }
+        assertThrows<IndexOutOfBoundsException>(
+            "Iterator must throw IndexOutOfBondsException after next() if all keys is bypassed"
+        ) {
+            iterator.next()
+        }
+    }
+
+    @Test
+    fun clear() {
+        val keys = intArrayOf(1, 2, 7, 2, 4, 9)
+        for (key in keys) avlTree[key] = -key
+        avlTree.clear()
+
+        assertEquals(avlTree.size, 0, "Size of the tree must be 0 after clear")
+        assertEquals(avlTree.root, null, "Root of the tree must be null after clear")
+    }
+
+    @Test
+    fun `contains key`() {
+        val keys = intArrayOf(1, 7, 3, -34, 45)
+        for (key in keys) avlTree[key] = key
+
+        for (key in keys) {
+            assertEquals(
+                avlTree.containsKey(key), true,
+                "containsKey must return true for keys existing in the tree"
+            )
+        }
+        avlTree.remove(-34)
+        val keysNotInTheTree = intArrayOf(102, 57, -22, -34)
+        for (key in keysNotInTheTree) {
+            assertEquals(
+                avlTree.containsKey(key), false,
+                "containsKey must return false for keys not existing in the tree"
+            )
+        }
+    }
+
+    @Test
+    fun isNotEmpty() {
+        assertEquals(avlTree.isNotEmpty(), false, "isNotEmpty must return false if tree is empty")
+
+        val keys = intArrayOf(1, 45, -10045, 0, -10000, 3000004)
+        for (key in keys) avlTree[key] = key
+
+        assertEquals(avlTree.isNotEmpty(), true, "isNotEmpty must return true if tree is not empty")
+
+        avlTree.clear()
+
+        assertEquals(avlTree.isNotEmpty(), false, "isNotEmpty must return false if tree is empty")
+
+    }
+
+    @Test
+    fun isEmpty() {
+        assertEquals(avlTree.isEmpty(), true, "isEmpty must return true if tree is empty")
+
+        avlTree[14] = 902
+
+        assertEquals(avlTree.isEmpty(), false, "isEmpty must return false if tree is not empty")
+
+        avlTree.remove(14)
+
+        assertEquals(avlTree.isEmpty(), true, "isEmpty must return true if tree is empty")
+    }
+
+    @Test
+    fun max() {
+        val keys = intArrayOf(0, -1, 1, -45, 5, 4, 2, 3)
+        for (key in keys) avlTree[key] = key
+
+        val expectedResult = Pair(5, 5)
+        val actualResult = avlTree.max()
+
+        assertEquals(expectedResult, actualResult, "Max must return Pair<K,V>s by max key in the tree")
+        checkTreeInvariant(avlTree.root)
+
+    }
+
+    @Test
+    fun `max after remove max key with double rotate`() {
+        val keys = intArrayOf(5, 1, 6, 0, 3, 7, 2, 4)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(7)
+
+        val expectedResult = Pair(6, 6)
+        val actualResult = avlTree.max()
+
+        assertEquals(expectedResult, actualResult, "Max must return Pair<K,V> by max key in the tree")
+        checkTreeInvariant(avlTree.root)
+    }
+
+    @Test
+    fun min() {
+        val keys = intArrayOf(54, 88, 4332, -46, -2)
+        for (key in keys) avlTree[key] = key
+
+
+        val expectedResult = Pair(-46, -46)
+        val actualResult = avlTree.min()
+        assertEquals(expectedResult, actualResult, "Min must return Pair<K,V> by min key in the tree")
+        checkTreeInvariant(avlTree.root)
+
+
+    }
+
+    @Test
+    fun `min after remove min key with double rotate`() {
+        val keys = intArrayOf(2, 1, 6, 0, 4, 7, 3, 5)
+        for (key in keys) avlTree[key] = key
+        avlTree.remove(0)
+
+        val expectedResult = Pair(1, 1)
+        val actualResult = avlTree.min()
+
+        assertEquals(expectedResult, actualResult, "Min must return Pair<K,V> by min key in the tree")
         checkTreeInvariant(avlTree.root)
     }
 }
