@@ -1,5 +1,6 @@
 package trees.rbtest
 
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import trees.implementations.RBTree
@@ -87,6 +88,9 @@ class RBTest {
         for (i in 10..19) {
             rbTree.remove(i)
         }
+        println(rbTree.root?.key)
+        println(rbTree.root?.left?.key)
+        println(rbTree.root?.right?.key)
         for (i in 10..19) {
             val expectedNotContains = rbTree[i]
             assertEquals(expectedNotContains, null, "Removed element contains in the tree")
@@ -104,6 +108,25 @@ class RBTest {
         assertEquals(expectedSize, actualSize, "Size the tree must correspond to the number key-value pairs")
     }
 
+    @Test
+    fun `not simple array set remove test`() {
+
+        for (i in 19 downTo 0) {
+            rbTree[19 - i] = i
+        }
+        for (i in 8..19) {
+            rbTree.remove(i)
+        }
+
+        for (i in 8..19) {
+            val expectedNotContains = rbTree[i]
+            assertEquals(expectedNotContains, null, "Removed element contains in the tree")
+        }
+        for (i in 0..7) {
+            val expectedContains = rbTree[i]
+            assertEquals(expectedContains, 19 - i, "Added and not removed element does not contain in the tree")
+        }
+    }
     @Test
     fun `adding and removing all elements test`() {
         for (i in 0..19) {
@@ -145,6 +168,23 @@ class RBTest {
         for (key in keys) rbTree[key] = key
 
         val expectedResult = Array<Int?>(keys.size) { i -> keys[i] }
+        val actualResult = Array(keys.size) { i -> rbTree[keys[i]] }
+        assertContentEquals(
+            expectedResult,
+            actualResult,
+        )
+    }
+
+    @Test
+    fun `remove root with rotate`() {
+        val keys = intArrayOf(4, 1, 6, 0, 3, 5, 2)
+        for (key in keys) rbTree[key] = key
+        println(Array(keys.size){i -> rbTree[keys[i]]}.toList())
+        rbTree.remove(4)
+        println((Array(keys.size) { i -> rbTree[keys[i]] }).toList())
+        Assertions.assertTrue(rbTree.root != null)
+
+        val expectedResult = arrayOf(null, 1, 6, 0, 3, 5, 2)
         val actualResult = Array(keys.size) { i -> rbTree[keys[i]] }
         assertContentEquals(
             expectedResult,
