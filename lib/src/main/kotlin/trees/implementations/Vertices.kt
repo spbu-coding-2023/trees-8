@@ -16,7 +16,7 @@ class AVLVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, A
 
 class RBVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, RBVertex<K, V>>(key, value) {
     var color: Color = Color.BLACK
-    var nullType = false
+    var additionalType = false
 
     enum class Color {
         BLACK,

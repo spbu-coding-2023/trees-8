@@ -14,21 +14,26 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
                 else -> parent.right = null
             }
         } else if (vertex.right == null) {
-            vertex.left?.let {
+            val successor = maxVertex(vertex.left)
+            val successorParent = successor?.parent
+            successor?.let {
                 vertex.key = it.key
                 vertex.value = it.value
-                vertex.left = null
+            }
+            when {
+                successorParent?.left == successor -> successorParent?.left = null
+                successorParent?.right == successor -> successorParent?.right = null
             }
         } else {
             val successor = minVertex(vertex.right)
             val successorParent = successor?.parent
             successor?.let {
-                vertex.key = successor.key
-                vertex.value = successor.value
+                vertex.key = it.key
+                vertex.value = it.value
             }
             when {
                 successorParent?.left == successor -> successorParent?.left = null
-                else -> vertex.right = null
+                successorParent?.right == successor -> successorParent?.right = null
             }
         }
         --size
