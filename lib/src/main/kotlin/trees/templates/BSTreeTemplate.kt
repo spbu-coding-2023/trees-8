@@ -1,6 +1,5 @@
 package trees.templates
 
-import trees.implementations.AVLVertex
 import java.util.Stack
 
 abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> {

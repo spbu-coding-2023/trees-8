@@ -18,19 +18,10 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
                 parent.left == vertex -> parent.left = null
                 else -> parent.right = null
             }
-        } else if (vertex.right == null) {
-            val successor = maxVertex(vertex.left)
-            val successorParent = successor?.parent
-            successor?.let {
-                vertex.key = it.key
-                vertex.value = it.value
-            }
-            when {
-                successorParent?.left == successor -> successorParent?.left = null
-                successorParent?.right == successor -> successorParent?.right = null
-            }
         } else {
-            val successor = minVertex(vertex.right)
+            val successor = if (vertex.right == null) {
+                maxVertex(vertex.left)
+            } else minVertex(vertex.right)
             val successorParent = successor?.parent
             successor?.let {
                 vertex.key = it.key
@@ -46,7 +37,7 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
     }
 
     override operator fun set(key: K, value: V): V? {
-        val (currentVert, oldValue) = setWithoutBalance(key, value, ::fabricVertex)
+        val oldValue = setWithoutBalance(key, value, ::fabricVertex).second
         if (oldValue == null) {
             size += 1
         }

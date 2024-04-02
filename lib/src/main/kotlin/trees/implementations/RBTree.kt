@@ -1,7 +1,6 @@
 package trees.implementations
 
 import trees.templates.BalanceBSTreeTemplate
-import java.sql.Blob
 
 class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>() {
 
@@ -108,11 +107,8 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
     }
 
     override fun remove(key: K): V? {
-        val vertex = vertByKey(key)
+        val vertex = vertByKey(key) ?: return null
 
-        if (vertex == null) {
-            return null
-        }
         size -= 1
         val replacedVertex: RBVertex<K, V>?
         val deletedVertexColor: RBVertex.Color
@@ -172,7 +168,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
 
     private fun manageBlackRedOne(vertex: RBVertex<K, V>?, argBrother: RBVertex<K, V>?) {
         var brother = argBrother
-        val isParent = if (vertex == vertex?.parent?.left) true else false
+        val isParent = vertex == vertex?.parent?.left
         if (isParent && brother?.right?.color == black) {
             brother.left?.color = black
             brother.color = red
