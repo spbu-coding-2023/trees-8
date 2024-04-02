@@ -136,11 +136,6 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
 
     override fun remove(key: K): V? {
         val vertex = vertByKey(key)
-        println("REMOVE: ${key}")
-        println(size)
-        println("   ${root?.key}")
-        println(" ${root?.left?.key} ${root?.right?.key}")
-        println("${root?.left?.left?.key} ${root?.left?.right?.key} ${root?.right?.left?.key} ${root?.right?.right?.key}")
         if (vertex == null) {
             return null
         }
