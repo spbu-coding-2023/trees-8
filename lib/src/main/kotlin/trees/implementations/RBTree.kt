@@ -67,7 +67,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
             if (result > 0) {
                 if (currentVertex.left == null) {
                     val newVertex = RBVertex(key, value)
-                    newVertex.color = RBVertex.Color.RED
+                    newVertex.color = red
                     currentVertex.left = newVertex
                     newVertex.parent = currentVertex
                     size += 1
@@ -77,7 +77,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
             } else if (result < 0) {
                 if (currentVertex.right == null) {
                     val newVertex = RBVertex(key, value)
-                    newVertex.color = RBVertex.Color.RED
+                    newVertex.color = red
                     currentVertex.right = newVertex
                     newVertex.parent = currentVertex
                     size += 1
@@ -152,16 +152,15 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
             replacedVertex = deleteNullChild(vertex)
             deletedVertexColor = vertex.color
         } else {
-            val minVertex = findMin(vertex.right!!)
-            minVertex.color = vertex.color
-            minVertex.left = vertex.left
-            minVertex.right = vertex.right
-            replaceChild(vertex.parent, vertex, minVertex)
+            var minVertex = findMin(vertex.right!!)
+
+            vertex.value = minVertex.value
+            vertex.key = minVertex.key
             replacedVertex = deleteNullChild(minVertex)
             deletedVertexColor = minVertex.color
         }
 
-        if (deletedVertexColor == RBVertex.Color.BLACK) {
+        if (deletedVertexColor == black) {
             balanceTreeAfterDelete(replacedVertex)
             if (replacedVertex?.nullType == true) {
                 replaceChild(replacedVertex.parent, replacedVertex, null)
@@ -172,19 +171,20 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
 
     private fun balanceTreeAfterDelete(vertex: RBVertex<K, V>?) {
         if (vertex == root) {
-            vertex?.color = RBVertex.Color.BLACK
+            vertex?.color = black
             return
         }
         var brother = getBrother(vertex)
 
-        if (brother?.color === RBVertex.Color.RED) {
+        if (brother?.color == red) {
             manageRedBrother(vertex, brother)
             brother = getBrother(vertex)
         }
-        if (brother?.left?.color == RBVertex.Color.BLACK && brother.right?.color == RBVertex.Color.BLACK) {
-            brother.color = RBVertex.Color.RED
-            if (vertex?.parent?.color == RBVertex.Color.RED) {
-                vertex.parent?.color = RBVertex.Color.BLACK
+
+        if (brother?.left?.color == black && brother.right?.color == black) {
+            brother.color = red
+            if (vertex?.parent?.color == red) {
+                vertex.parent?.color = black
             } else {
                 balanceTreeAfterDelete(vertex?.parent)
             }
@@ -206,31 +206,32 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
 
     private fun manageBlackRedOne(vertex: RBVertex<K, V>?, argBrother: RBVertex<K, V>?) {
         var brother = argBrother
-        if (vertex == vertex?.parent?.left && brother?.right?.color == black) {
+        val isParent = if (vertex == vertex?.parent?.left) true else false
+        if (isParent && brother?.right?.color == black) {
             brother.left?.color = black
             brother.color = red
             rotateRight(brother)
             brother = vertex?.parent?.right
-        } else if (vertex != vertex?.parent?.left && brother?.left?.color == black) {
+
+        } else if (!isParent && brother?.left?.color == black) {
             brother.right?.color = black
             brother.color = red
             rotateLeft(brother)
             brother = vertex?.parent?.left
         }
         brother?.color = vertex?.parent!!.color
-        vertex.parent?.color = black
-        if (vertex == vertex.parent?.left) {
-            brother?.right?.color = black
+        if (isParent) {
+            brother?.left?.color = black
             rotateLeft(vertex.parent)
         } else {
-            brother?.left?.color = black
+            brother?.right?.color = black
             rotateRight(vertex.parent)
         }
     }
 
     private fun manageRedBrother(vertex: RBVertex<K, V>?, brother: RBVertex<K, V>) {
-        brother.color = RBVertex.Color.BLACK
-        vertex?.parent?.color = RBVertex.Color.RED
+        brother.color = black
+        vertex?.parent?.color = red
         if (vertex === vertex?.parent?.left) {
             rotateLeft(vertex?.parent)
         } else {
@@ -241,9 +242,9 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
     private fun replaceChild(parent: RBVertex<K, V>?, oldChild: RBVertex<K, V>, newChild: RBVertex<K, V>?) {
         if (parent == null) {
             root = newChild
-        } else if (parent.left === oldChild) {
+        } else if (parent.left == oldChild) {
             parent.left = newChild
-        } else if (parent.right === oldChild) {
+        } else if (parent.right == oldChild) {
             parent.right = newChild
         } else {
             throw IllegalStateException()
@@ -254,6 +255,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
     }
 
     private fun deleteNullChild(vertex: RBVertex<K, V>): RBVertex<K, V>? {
+        println(vertex.key)
         if (vertex.left != null) {
             replaceChild(vertex.parent, vertex, vertex.left)
             return vertex.left
@@ -262,8 +264,9 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
             return vertex.right
         } else {
             var newChild: RBVertex<K, V>? = RBVertex(vertex.key, vertex.value)
-            if (vertex.color == RBVertex.Color.BLACK) {
+            if (vertex.color == black) {
                 newChild?.nullType = true
+                newChild?.color = black
             } else {
                 newChild = null
             }
