@@ -35,10 +35,7 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
         return oldValue
     }
 
-    override operator fun set(
-        key: K,
-        value: V,
-    ): V? {
+    override operator fun set(key: K, value: V): V? {
         if (root == null) {
             val vertex = SimpleVertex(key, value)
             root = vertex
@@ -70,7 +67,7 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
             } else {
                 val oldValue = current.value
                 current.value = value
-                return null
+                return oldValue
             }
         }
     }
