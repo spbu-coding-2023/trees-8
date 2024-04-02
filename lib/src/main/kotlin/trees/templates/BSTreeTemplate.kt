@@ -21,6 +21,48 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
      */
     abstract operator fun set(key: K, value: V): V?
 
+    abstract protected fun fabricVertex(key: K, value: V): Vertex_t
+
+    /**
+     * Set specified value by specified key
+     *
+     * Returns: a pair of set vertex and old value.
+     * If key didn't exist, the returned value is null.
+     */
+    protected fun setWithoutBalance(key: K, value: V, fabric: (K, V) -> Vertex_t): Pair<Vertex_t, V?> {
+        if (root == null) {
+            val newVertex = fabric(key, value)
+            root = newVertex
+            return Pair(newVertex, null)
+        }
+
+        var cur = root ?: throw IllegalStateException("Case when root is null is processed above")
+        while (true) {
+            val result = key.compareTo(cur.key)
+            if (result < 0) {
+                if (cur.left == null) {
+                    val newVertex = fabric(key, value)
+                    cur.left = newVertex
+                    newVertex.parent = cur
+                    return Pair(newVertex, null)
+                }
+                cur = cur.left ?: throw IllegalStateException("Case when cur.left is null is processed above")
+            } else if (result > 0) {
+                if (cur.right == null) {
+                    val newVertex = fabric(key, value)
+                    cur.right = newVertex
+                    newVertex.parent = cur
+                    return Pair(newVertex, null)
+                }
+                cur = cur.right ?: throw IllegalStateException("Case when cur.right is null is processed above")
+            } else {
+                val oldValue = cur.value
+                cur.value = value
+                return Pair(cur, oldValue)
+            }
+        }
+    }
+
     /**
      * Associates the specified value with the specified key if this key is not in the tree.
      * @return true if this key is not in the tree, otherwise false
