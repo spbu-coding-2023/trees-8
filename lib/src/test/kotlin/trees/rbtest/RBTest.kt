@@ -179,7 +179,6 @@ class RBTest {
         for (key in keys) rbTree[key] = key
         rbTree.remove(4)
         Assertions.assertTrue(rbTree.root != null)
-
         val expectedResult = arrayOf(null, 1, 6, 0, 3, 5, 2)
         val actualResult = Array(keys.size) { i -> rbTree[keys[i]] }
         assertContentEquals(
@@ -187,7 +186,7 @@ class RBTest {
             actualResult,
         )
     }
-
+    
     @Test
     fun `remove a non-existent key`() {
         rbTree[0] = 15

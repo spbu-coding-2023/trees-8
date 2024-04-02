@@ -135,7 +135,9 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
     }
 
     override fun remove(key: K): V? {
+
         val vertex = vertByKey(key)
+
         if (vertex == null) {
             return null
         }
@@ -151,6 +153,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
             vertex.key = mVertex.key
             replacedVertex = deleteNullChild(mVertex)
             deletedVertexColor = mVertex.color
+
         }
 
         if (deletedVertexColor == black) {
@@ -242,6 +245,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
     }
 
     private fun deleteNullChild(vertex: RBVertex<K, V>): RBVertex<K, V>? {
+        println(vertex.key)
         if (vertex.left != null) {
             replaceChild(vertex.parent, vertex, vertex.left)
             return vertex.left
