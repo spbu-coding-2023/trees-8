@@ -4,7 +4,7 @@ import trees.templates.BalanceBSTreeTemplate
 
 class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
     override operator fun set(key: K, value: V): V? {
-        val (currentVert, oldValue) = setWithoutBalance(key, value)
+        val (currentVert, oldValue) = setWithoutBalance(key, value, ::fabricVertex)
         if (oldValue == null) {
             size += 1
             balanceAfterSet(currentVert)
@@ -12,45 +12,10 @@ class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
         return oldValue
     }
 
-    /**
-     * Set specified value by specified key
-     *
-     * Returns: a pair of set vertex and old value.
-     * If key didn't exist, the returned value is null.
-     */
-    private fun setWithoutBalance(key: K, value: V): Pair<AVLVertex<K, V>, V?> {
-        if (root == null) {
-            val newVertex = AVLVertex(key, value)
-            root = newVertex
-            return Pair(newVertex, null)
-        }
-
-        var cur = root ?: throw IllegalStateException("Case when root is null is processed above")
-        while (true) {
-            val result = key.compareTo(cur.key)
-            if (result < 0) {
-                if (cur.left == null) {
-                    val newVertex = AVLVertex(key, value)
-                    cur.left = newVertex
-                    newVertex.parent = cur
-                    return Pair(newVertex, null)
-                }
-                cur = cur.left ?: throw IllegalStateException("Case when cur.left is null is processed above")
-            } else if (result > 0) {
-                if (cur.right == null) {
-                    val newVertex = AVLVertex(key, value)
-                    cur.right = newVertex
-                    newVertex.parent = cur
-                    return Pair(newVertex, null)
-                }
-                cur = cur.right ?: throw IllegalStateException("Case when cur.right is null is processed above")
-            } else {
-                val oldValue = cur.value
-                cur.value = value
-                return Pair(cur, oldValue)
-            }
-        }
+    override fun fabricVertex(key: K, value: V): AVLVertex<K, V> {
+        return AVLVertex(key, value)
     }
+
 
     /**
      * Climbing up the tree, updates diffHeights of vertices after set and calls
