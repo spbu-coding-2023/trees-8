@@ -135,36 +135,32 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
     }
 
     override fun remove(key: K): V? {
-        var vertex = root
-        while (vertex != null && vertex.key != key) {
-            if (key < vertex.key) {
-                vertex = vertex.left
-            } else {
-                vertex = vertex.right
-            }
-        }
-        if(vertex?.key == key) size -= 1
-
+        val vertex = vertByKey(key)
+        println("REMOVE: ${key}")
+        println(size)
+        println("   ${root?.key}")
+        println(" ${root?.left?.key} ${root?.right?.key}")
+        println("${root?.left?.left?.key} ${root?.left?.right?.key} ${root?.right?.left?.key} ${root?.right?.right?.key}")
         if (vertex == null) {
             return null
         }
+        size -= 1
         val replacedVertex: RBVertex<K, V>?
         val deletedVertexColor: RBVertex.Color
         if (vertex.left == null || vertex.right == null) {
             replacedVertex = deleteNullChild(vertex)
             deletedVertexColor = vertex.color
         } else {
-            var minVertex = findMin(vertex.right!!)
-
-            vertex.value = minVertex.value
-            vertex.key = minVertex.key
-            replacedVertex = deleteNullChild(minVertex)
-            deletedVertexColor = minVertex.color
+            val mVertex = minVertex(vertex.right!!)!!
+            vertex.value = mVertex.value
+            vertex.key = mVertex.key
+            replacedVertex = deleteNullChild(mVertex)
+            deletedVertexColor = mVertex.color
         }
 
         if (deletedVertexColor == black) {
             balanceTreeAfterDelete(replacedVertex)
-            if (replacedVertex?.nullType == true) {
+            if (replacedVertex?.additionalType == true) {
                 replaceChild(replacedVertex.parent, replacedVertex, null)
             }
         }
@@ -177,20 +173,20 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
             return
         }
         var brother = getBrother(vertex)
-
         if (brother?.color == red) {
             manageRedBrother(vertex, brother)
             brother = getBrother(vertex)
         }
-
         if (brother?.left?.color == black && brother.right?.color == black) {
             brother.color = red
             if (vertex?.parent?.color == red) {
                 vertex.parent?.color = black
-            } else {
+            }
+            else {
                 balanceTreeAfterDelete(vertex?.parent)
             }
-        } else {
+        }
+        else {
             manageBlackRedOne(vertex, brother)
         }
     }
@@ -260,7 +256,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         } else {
             var newChild: RBVertex<K, V>? = RBVertex(vertex.key, vertex.value)
             if (vertex.color == black) {
-                newChild?.nullType = true
+                newChild?.additionalType = true
                 newChild?.color = black
             } else {
                 newChild = null
@@ -270,13 +266,7 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
         }
     }
 
-    private fun findMin(argVertex: RBVertex<K, V>): RBVertex<K, V> {
-        var vertex = argVertex
-        while (vertex.left != null) {
-            vertex = vertex.left!!
-        }
-        return vertex
-    }
+
 
     private fun getVertexUncle(parent: RBVertex<K, V>): RBVertex<K, V>? {
         val grandparent = parent.parent
