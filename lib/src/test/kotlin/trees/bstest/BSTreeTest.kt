@@ -114,7 +114,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testRemoveRootWith2Childs() {
+    fun testRemoveRootWith2Children() {
         val keys = intArrayOf(0, -1, 2, 1, 3)
         for (key in keys) {
             simpleTree[key] = key
@@ -127,7 +127,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testRemoveRigthRootWithoutChilds() {
+    fun testRemoveRightRootWithoutChildren() {
         val keys = intArrayOf(0, -1, 2)
         for (key in keys) {
             simpleTree[key] = key
