@@ -127,6 +127,7 @@ class RBTest {
             assertEquals(expectedContains, 19 - i, "Added and not removed element does not contain in the tree")
         }
     }
+
     @Test
     fun `adding and removing all elements test`() {
         for (i in 0..19) {
@@ -179,7 +180,7 @@ class RBTest {
     fun `remove root with rotate`() {
         val keys = intArrayOf(4, 1, 6, 0, 3, 5, 2)
         for (key in keys) rbTree[key] = key
-        println(Array(keys.size){i -> rbTree[keys[i]]}.toList())
+        println(Array(keys.size) { i -> rbTree[keys[i]] }.toList())
         rbTree.remove(4)
         println((Array(keys.size) { i -> rbTree[keys[i]] }).toList())
         Assertions.assertTrue(rbTree.root != null)
@@ -189,6 +190,20 @@ class RBTest {
         assertContentEquals(
             expectedResult,
             actualResult,
+        )
+    }
+
+    @Test
+    fun `remove a non-existent key`() {
+        rbTree[0] = 15
+        rbTree.remove(0)
+
+        val expectedResult = null
+        val actualResult = rbTree.remove(0)
+        assertEquals(
+            expectedResult,
+            actualResult,
+            "Remove a non-existent key must return null",
         )
     }
 }
