@@ -161,15 +161,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
      * Returns Pair<K,V> by maximum key in the tree. If tree is empty then returns null
      */
     fun max(): Pair<K, V>? {
-        return maxVert(root)?.toPair()
-    }
-
-    private fun maxVert(vertex: Vertex_t?): Vertex_t? {
-        var cur = vertex
-        while (cur?.right != null) {
-            cur = cur.right
-        }
-        return cur
+        return maxVertex(root)?.toPair()
     }
 
     protected fun vertByKey(key: K): Vertex_t? {
