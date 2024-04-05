@@ -2,7 +2,7 @@ package trees.implementations
 
 import trees.templates.BalanceBSTreeTemplate
 
-class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>() {
+open class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>() {
 
     override fun fabricVertex(key: K, value: V): RBVertex<K, V> {
         return RBVertex(key, value)

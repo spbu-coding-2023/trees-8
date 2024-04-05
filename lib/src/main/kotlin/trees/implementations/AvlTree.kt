@@ -2,7 +2,7 @@ package trees.implementations
 
 import trees.templates.BalanceBSTreeTemplate
 
-class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
+open class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
     override operator fun set(key: K, value: V): V? {
         val (currentVert, oldValue) = setWithoutBalance(key, value, ::fabricVertex)
         if (oldValue == null) {
@@ -15,7 +15,6 @@ class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
     override fun fabricVertex(key: K, value: V): AVLVertex<K, V> {
         return AVLVertex(key, value)
     }
-
 
     /**
      * Climbing up the tree, updates diffHeights of vertices after set and calls

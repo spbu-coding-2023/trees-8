@@ -2,7 +2,7 @@ package trees.implementations
 
 import trees.templates.BSTreeTemplate
 
-class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>>() {
+open class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>>() {
 
     override fun fabricVertex(key: K, value: V): SimpleVertex<K, V> {
         return SimpleVertex(key, value)
@@ -43,5 +43,4 @@ class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>
         }
         return oldValue
     }
-
 }
