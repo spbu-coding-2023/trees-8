@@ -8,16 +8,16 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class BSTreeTest {
-    private lateinit var simpleTree: SimpleTree<Int, Int>
+    private lateinit var simpleTree: SimpleTestTree<Int, Int>
 
     @BeforeEach
     fun setup() {
-        simpleTree = SimpleTree()
+        simpleTree = SimpleTestTree()
     }
 
     @Test
     fun testCheckEmptyTree() {
-        assertNull(simpleTree.root)
+        assertNull(simpleTree.getRootSimple())
         assertEquals(0, simpleTree.size)
     }
 

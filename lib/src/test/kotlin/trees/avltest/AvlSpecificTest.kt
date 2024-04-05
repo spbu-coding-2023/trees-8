@@ -9,7 +9,7 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class AvlSpecificTest {
-    private lateinit var avlTree: AvlTree<Int, Int>
+    private lateinit var avlTree: AvlTestTree<Int, Int>
 
     companion object {
         /**
@@ -38,7 +38,7 @@ class AvlSpecificTest {
 
     @BeforeEach
     fun setup() {
-        avlTree = AvlTree()
+        avlTree = AvlTestTree()
     }
 
     @Test
@@ -54,7 +54,7 @@ class AvlSpecificTest {
             actualResult,
             "Tree must save all other vertices after remove that creates unbalance situation",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
     }
 
     @Test
@@ -63,7 +63,7 @@ class AvlSpecificTest {
         for (key in keys) avlTree[key] = key
         avlTree.remove(4)
 
-        assertTrue(avlTree.root != null)
+        assertTrue(avlTree.getRootAvl() != null)
         val expectedResult = arrayOf(null, 1, 6, 0, 3, 5, 2)
         val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
         assertContentEquals(
@@ -71,7 +71,7 @@ class AvlSpecificTest {
             actualResult,
             "Tree must save all other vertices after root remove",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
     }
 
     @Test
@@ -86,7 +86,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after left rotate ( right.diffHeight = -1)",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
 
 //                  0                    0                    2
 //                 / \                  / \                 /   \
@@ -110,7 +110,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after left rotate (right.diffHeight = 0)",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
 //                  0                     0                      4
 //                 / \                   / \                    /  \
 //               -1   4                -1   4                  0    6
@@ -132,7 +132,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after right rotate (left.diffHeight = 1)",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
 
 //                  0                  0                  -1
 //                 / \                / \                /  \
@@ -156,7 +156,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after right rotate (left.diffHeight = 0)",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
 
 //                 7                     7                        3
 //                / \                   / \                      /  \
@@ -179,7 +179,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after right-left rotate with right.left.diffHeight = 1",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
 
 //                1                    1                  3
 //               / \                  / \                / \
@@ -203,7 +203,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after right-left rotate with right.left.diffHeight = 0",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
     }
 
     @Test
@@ -218,7 +218,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after right-left rotate with right.left.diffHeight = -1",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
     }
 
     @Test
@@ -233,7 +233,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after left-right rotate with left.right.diffHeight = -1",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
     }
 
     @Test
@@ -249,7 +249,7 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after left-right rotate with left.right.diffHeight = 0",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
     }
 
     @Test
@@ -264,6 +264,6 @@ class AvlSpecificTest {
             actualResult,
             "Get must return corresponding values after left-right rotate with left.right.diffHeight = 1",
         )
-        checkTreeInvariant(avlTree.root)
+        checkTreeInvariant(avlTree.getRootAvl())
     }
 }
