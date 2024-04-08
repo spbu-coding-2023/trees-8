@@ -1,6 +1,5 @@
 package trees.bstest
 
-import trees.implementations.SimpleTree
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,13 +15,13 @@ class BSTreeTest {
     }
 
     @Test
-    fun testCheckEmptyTree() {
+    fun `check empty tree`() {
         assertNull(simpleTree.getRootSimple())
         assertEquals(0, simpleTree.size)
     }
 
     @Test
-    fun testInsertAndFind() {
+    fun `insert and find`() {
         val array = intArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
         for (i in array) {
             simpleTree[i] = -i
@@ -36,7 +35,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testSimpleDelete() {
+    fun `simple delete`() {
         val array = intArrayOf(0, 1, 2, 3, 4, 5, 6)
         for (i in array) {
             simpleTree[i] = i
@@ -52,7 +51,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testSizeWithDuplicateKeys() {
+    fun `size with duplicate keys`() {
         for (i in 1..10) {
             simpleTree[i] = i + 30
         }
@@ -66,7 +65,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testTwiceKeys() {
+    fun `twice keys`() {
         for (i in 1..10) {
             simpleTree[i] = 30 + i
         }
@@ -80,7 +79,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testRemoveNonExistentKey() {
+    fun `remove non existent key`() {
         simpleTree[0] = 15
         val actualResult = simpleTree.remove(3)
         val expectedResult = null
@@ -88,7 +87,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testRemoveRootOfLeftSubtree() {
+    fun `remove root of left subtree`() {
         val keys = intArrayOf(0, -1, 1, -2)
         for (i in keys) {
             simpleTree[i] = i
@@ -101,7 +100,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testRemoveRootOfRightSubtree() {
+    fun `remove root of right subtree`() {
         val keys = intArrayOf(0, -1, 2, 1)
         for (i in keys) {
             simpleTree[i] = i
@@ -114,7 +113,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testRemoveRootWith2Children() {
+    fun `remove root with 2 children`() {
         val keys = intArrayOf(0, -1, 2, 1, 3)
         for (key in keys) {
             simpleTree[key] = key
@@ -127,7 +126,7 @@ class BSTreeTest {
     }
 
     @Test
-    fun testRemoveRightRootWithoutChildren() {
+    fun `remove right root without children`() {
         val keys = intArrayOf(0, -1, 2)
         for (key in keys) {
             simpleTree[key] = key
