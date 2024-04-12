@@ -2,7 +2,7 @@ package trees.templates
 
 import java.util.Stack
 
-abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> {
+abstract class BSTree<K : Comparable<K>, V, Vertex_t : Vertex<K, V, Vertex_t>> {
     internal var root: Vertex_t? = null
     var size: Int = 0
         protected set(value) {
