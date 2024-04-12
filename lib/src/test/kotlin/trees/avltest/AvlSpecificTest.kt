@@ -1,15 +1,15 @@
 package trees.avltest
 
-import trees.implementations.AvlTree
-import trees.implementations.AVLVertex
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import trees.implementations.AVLVertex
+import trees.implementations.AvlTree
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class AvlSpecificTest {
-    private lateinit var avlTree: AvlTestTree<Int, Int>
+    private lateinit var avlTree: AvlTree<Int, Int>
 
     companion object {
         /**
@@ -38,7 +38,7 @@ class AvlSpecificTest {
 
     @BeforeEach
     fun setup() {
-        avlTree = AvlTestTree()
+        avlTree = AvlTree()
     }
 
     @Test
@@ -48,13 +48,13 @@ class AvlSpecificTest {
         avlTree.remove(7)
 
         val expectedResult = arrayOf(5, 0, null, -1, 2, 6, 9, -2, 1, 3, 8, 4)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Tree must save all other vertices after remove that creates unbalance situation",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -63,15 +63,15 @@ class AvlSpecificTest {
         for (key in keys) avlTree[key] = key
         avlTree.remove(4)
 
-        assertTrue(avlTree.getRootAvl() != null)
+        assertTrue(avlTree.root != null)
         val expectedResult = arrayOf(null, 1, 6, 0, 3, 5, 2)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Tree must save all other vertices after root remove",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -79,14 +79,14 @@ class AvlSpecificTest {
         val keys = intArrayOf(0, -1, 2, 1, 3, 4)
         for (key in keys) avlTree[key] = key
 
-        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val expectedResult = Array<Int?>(keys.size) { i -> keys[i] }
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after left rotate ( right.diffHeight = -1)",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
 
 //                  0                    0                    2
 //                 / \                  / \                 /   \
@@ -104,13 +104,13 @@ class AvlSpecificTest {
         avlTree.remove(-2)
 
         val expectedResult = arrayOf(0, -1, 4, 2, 6, null, 1, 3, 5, 7)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after left rotate (right.diffHeight = 0)",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
 //                  0                     0                      4
 //                 / \                   / \                    /  \
 //               -1   4                -1   4                  0    6
@@ -125,14 +125,14 @@ class AvlSpecificTest {
         val keys = intArrayOf(0, 1, -1, -3, -2, -4)
         for (key in keys) avlTree[key] = key
 
-        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val expectedResult = Array<Int?>(keys.size) { i -> keys[i] }
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after right rotate (left.diffHeight = 1)",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
 
 //                  0                  0                  -1
 //                 / \                / \                /  \
@@ -150,13 +150,13 @@ class AvlSpecificTest {
         avlTree.remove(9)
 
         val expectedResult = arrayOf(7, 3, 8, null, 1, 5, 0, 2, 4, 6)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after right rotate (left.diffHeight = 0)",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
 
 //                 7                     7                        3
 //                / \                   / \                      /  \
@@ -172,14 +172,14 @@ class AvlSpecificTest {
         val keys = intArrayOf(1, 0, 4, 3, 5, 2)
         for (key in keys) avlTree[key] = key
 
-        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val expectedResult = Array<Int?>(keys.size) { i -> keys[i] }
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after right-left rotate with right.left.diffHeight = 1",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
 
 //                1                    1                  3
 //               / \                  / \                / \
@@ -197,13 +197,13 @@ class AvlSpecificTest {
         avlTree.remove(0)
 
         val expectedResult: Array<Int?> = arrayOf(2, 1, 6, null, 4, 7, 3, 5)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after right-left rotate with right.left.diffHeight = 0",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -211,14 +211,14 @@ class AvlSpecificTest {
         val keys = intArrayOf(1, 0, 4, 2, 5, 3)
         for (key in keys) avlTree[key] = key
 
-        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val expectedResult = Array<Int?>(keys.size) { i -> keys[i] }
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after right-left rotate with right.left.diffHeight = -1",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -226,14 +226,14 @@ class AvlSpecificTest {
         val keys = intArrayOf(4, 1, 5, 0, 2, 3)
         for (key in keys) avlTree[key] = key
 
-        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val expectedResult = Array<Int?>(keys.size) { i -> keys[i] }
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after left-right rotate with left.right.diffHeight = -1",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -243,13 +243,13 @@ class AvlSpecificTest {
         avlTree.remove(7)
 
         val expectedResult = arrayOf(5, 1, 6, 0, 3, null, 2, 4)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after left-right rotate with left.right.diffHeight = 0",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -257,13 +257,13 @@ class AvlSpecificTest {
         val keys = intArrayOf(4, 1, 5, 0, 3, 2)
         for (key in keys) avlTree[key] = key
 
-        val expectedResult = Array<Int?>(keys.size, { i -> keys[i] })
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val expectedResult = Array<Int?>(keys.size) { i -> keys[i] }
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Get must return corresponding values after left-right rotate with left.right.diffHeight = 1",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 }

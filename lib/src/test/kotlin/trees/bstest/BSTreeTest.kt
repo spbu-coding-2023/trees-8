@@ -3,20 +3,21 @@ package trees.bstest
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import trees.implementations.SimpleTree
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class BSTreeTest {
-    private lateinit var simpleTree: SimpleTestTree<Int, Int>
+    private lateinit var simpleTree: SimpleTree<Int, Int>
 
     @BeforeEach
     fun setup() {
-        simpleTree = SimpleTestTree()
+        simpleTree = SimpleTree()
     }
 
     @Test
     fun `check empty tree`() {
-        assertNull(simpleTree.getRootSimple())
+        assertNull(simpleTree.root)
         assertEquals(0, simpleTree.size)
     }
 
@@ -138,22 +139,3 @@ class BSTreeTest {
         assertContentEquals(expectedResult, actualResult)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

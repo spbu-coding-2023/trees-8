@@ -1,15 +1,15 @@
 package trees.implementations
 
-import trees.templates.BalanceBSTreeTemplate
+import trees.abstracts.BalanceBSTree
 
-open class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>() {
+class RBTree<K : Comparable<K>, V> : BalanceBSTree<K, V, RBVertex<K, V>>() {
 
-    override fun fabricVertex(key: K, value: V): RBVertex<K, V> {
+    override fun createVertex(key: K, value: V): RBVertex<K, V> {
         return RBVertex(key, value)
     }
 
     override fun set(key: K, value: V): V? {
-        val (currentVert, oldValue) = setWithoutBalance(key, value, ::fabricVertex)
+        val (currentVert, oldValue) = setWithoutBalance(key, value)
         if (oldValue == null) {
             size += 1
         }
@@ -121,7 +121,6 @@ open class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K
             vertex.key = mVertex.key
             replacedVertex = deleteNullChild(mVertex)
             deletedVertexColor = mVertex.color
-
         }
 
         if (deletedVertexColor == black) {
@@ -157,12 +156,10 @@ open class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K
 
     private fun getBrother(vertex: RBVertex<K, V>?): RBVertex<K, V>? {
         val parent = vertex?.parent
-        return if (vertex == parent?.left) {
-            parent?.right
-        } else if (vertex == parent?.right) {
-            parent?.left
-        } else {
-            throw IllegalStateException()
+        return when (vertex) {
+            parent?.left -> parent?.right
+            parent?.right -> parent?.left
+            else -> throw IllegalStateException()
         }
     }
 
@@ -174,7 +171,6 @@ open class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K
             brother.color = red
             rotateLeft(brother)
             brother = vertex?.parent?.right
-
         } else if (!isParent && brother?.left?.color == black) {
             brother.right?.color = black
             brother.color = red
@@ -230,7 +226,6 @@ open class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K
             return newChild
         }
     }
-
 
     private fun getVertexUncle(parent: RBVertex<K, V>): RBVertex<K, V>? {
         val grandparent = parent.parent

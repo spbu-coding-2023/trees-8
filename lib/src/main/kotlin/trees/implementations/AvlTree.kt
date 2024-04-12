@@ -1,10 +1,10 @@
 package trees.implementations
 
-import trees.templates.BalanceBSTreeTemplate
+import trees.abstracts.BalanceBSTree
 
-open class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
+class AvlTree<K : Comparable<K>, V> : BalanceBSTree<K, V, AVLVertex<K, V>>() {
     override operator fun set(key: K, value: V): V? {
-        val (currentVert, oldValue) = setWithoutBalance(key, value, ::fabricVertex)
+        val (currentVert, oldValue) = setWithoutBalance(key, value)
         if (oldValue == null) {
             size += 1
             balanceAfterSet(currentVert)
@@ -12,7 +12,7 @@ open class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex
         return oldValue
     }
 
-    override fun fabricVertex(key: K, value: V): AVLVertex<K, V> {
+    override fun createVertex(key: K, value: V): AVLVertex<K, V> {
         return AVLVertex(key, value)
     }
 
@@ -22,9 +22,8 @@ open class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex
      */
     private fun balanceAfterSet(vertex: AVLVertex<K, V>) {
         var cur = vertex
-        var prevKey = cur.key
         while (cur.parent != null) {
-            prevKey = cur.key
+            val prevKey = cur.key
             cur = cur.parent ?: throw IllegalStateException("Parent can't be null due to while condition")
             if (prevKey == cur.left?.key) {
                 cur.diffHeight += 1

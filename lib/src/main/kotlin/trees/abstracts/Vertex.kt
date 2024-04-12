@@ -1,6 +1,6 @@
-package trees.templates
+package trees.abstracts
 
-abstract class VertexTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>>(key: K, value: V) {
+abstract class Vertex<K : Comparable<K>, V, Vertex_t : Vertex<K, V, Vertex_t>>(key: K, value: V) {
     var key = key
         internal set
     var value = value
@@ -12,7 +12,7 @@ abstract class VertexTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
     var right: Vertex_t? = null
         internal set
 
-    operator fun compareTo(other: VertexTemplate<K, V, Vertex_t>): Int {
+    operator fun compareTo(other: Vertex<K, V, Vertex_t>): Int {
         return key.compareTo(other.key)
     }
 

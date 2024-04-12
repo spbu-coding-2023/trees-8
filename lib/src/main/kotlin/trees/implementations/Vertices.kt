@@ -1,10 +1,10 @@
 package trees.implementations
 
-import trees.templates.VertexTemplate
+import trees.abstracts.Vertex
 
-class SimpleVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, SimpleVertex<K, V>>(key, value)
+class SimpleVertex<K : Comparable<K>, V>(key: K, value: V) : Vertex<K, V, SimpleVertex<K, V>>(key, value)
 
-class AVLVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, AVLVertex<K, V>>(key, value) {
+class AVLVertex<K : Comparable<K>, V>(key: K, value: V) : Vertex<K, V, AVLVertex<K, V>>(key, value) {
     var diffHeight: Int = 0
         internal set(value) {
             if (value !in -2..2) {
@@ -14,7 +14,7 @@ class AVLVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, A
         }
 }
 
-class RBVertex<K : Comparable<K>, V>(key: K, value: V) : VertexTemplate<K, V, RBVertex<K, V>>(key, value) {
+class RBVertex<K : Comparable<K>, V>(key: K, value: V) : Vertex<K, V, RBVertex<K, V>>(key, value) {
     var color: Color = Color.RED
     var additionalType = false
 

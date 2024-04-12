@@ -3,18 +3,18 @@ package trees.avltest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import trees.avltest.AvlSpecificTest.Companion.checkTreeInvariant
 import trees.implementations.AvlTree
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import trees.avltest.AvlSpecificTest.Companion.checkTreeInvariant
 import kotlin.test.assertIs
 
 class AvlGeneralTest {
-    private lateinit var avlTree: AvlTestTree<Int, Int>
+    private lateinit var avlTree: AvlTree<Int, Int>
 
     @BeforeEach
     fun setup() {
-        avlTree = AvlTestTree()
+        avlTree = AvlTree()
     }
 
     @Test
@@ -23,13 +23,13 @@ class AvlGeneralTest {
         for (i in array) {
             avlTree[i] = -i
         }
-        val expectedGet: Array<Int?> = Array(5, { i -> -i })
-        val actualGet: Array<Int?> = Array(5, { i -> avlTree[i] })
+        val expectedGet: Array<Int?> = Array(5) { i -> -i }
+        val actualGet: Array<Int?> = Array(5) { i -> avlTree[i] }
         assertContentEquals(expectedGet, actualGet, "Get method must return the value associated with the key")
         val expectedSize = 5
         val actualSize = avlTree.size
         assertEquals(expectedSize, actualSize, "Size the tree must correspond to the number key-value pairs")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -48,7 +48,7 @@ class AvlGeneralTest {
             actualSize,
             "Size of the tree must not change after overwriting an existing key",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -67,19 +67,21 @@ class AvlGeneralTest {
             actualSize,
             "Size of the tree must not change after overwriting an existing key",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
     fun `set return`() {
         assertEquals(
-            avlTree.set(44, -37), null,
-            "Set must return null if set key was not present in the tree"
+            avlTree.set(44, -37),
+            null,
+            "Set must return null if set key was not present in the tree",
         )
 
         assertEquals(
-            avlTree.set(44, 152), -37,
-            "Set must return previous value associated with the key"
+            avlTree.set(44, 152),
+            -37,
+            "Set must return previous value associated with the key",
         )
     }
 
@@ -125,13 +127,13 @@ class AvlGeneralTest {
         avlTree.remove(-1)
 
         val expectedResult = arrayOf(0, null, 1, -2)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Tree must save all other vertices after remove vertex with existing left vertex",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -141,13 +143,13 @@ class AvlGeneralTest {
         avlTree.remove(2)
 
         val expectedResult = arrayOf(0, -1, null, 1)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Tree must save all other vertices after remove root of right subtree with existing left vertex",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -157,13 +159,13 @@ class AvlGeneralTest {
         avlTree.remove(3)
 
         val expectedResult = arrayOf(0, -1, null, 1, 2)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Tree must save all other vertices after remove vertex with right subtree of height 1",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -173,15 +175,15 @@ class AvlGeneralTest {
         avlTree.remove(3)
 
         val expectedResult = arrayOf(0, -1, null, -2, 1, 6, 4, 7)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
             "Tree must save all other vertices after remove vertex with right subtree of height >1",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
         avlTree[5] = 5
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -194,9 +196,9 @@ class AvlGeneralTest {
 
         val expectedResult: Array<Int?> = arrayOf(-34, 19, 12, 0, 31, 14, 17)
         val iterator = avlTree.iterator()
-        val actualResult: Array<Int?> = Array(7, { iterator.next().second })
+        val actualResult: Array<Int?> = Array(7) { iterator.next().second }
         assertContentEquals(expectedResult, actualResult, "Iterator must return vertices in keys order")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -206,11 +208,12 @@ class AvlGeneralTest {
         val iterator = avlTree.iterator()
         for (key in keys) {
             assertIs<Pair<Int, Int>>(
-                iterator.next(), "iterator.next() must return Pair<K,V> while all keys is not bypassed"
+                iterator.next(),
+                "iterator.next() must return Pair<K,V> while all keys is not bypassed",
             )
         }
         assertThrows<IndexOutOfBoundsException>(
-            "Iterator must throw IndexOutOfBondsException after next() if all keys is bypassed"
+            "Iterator must throw IndexOutOfBondsException after next() if all keys is bypassed",
         ) {
             iterator.next()
         }
@@ -223,7 +226,7 @@ class AvlGeneralTest {
         avlTree.clear()
 
         assertEquals(avlTree.size, 0, "Size of the tree must be 0 after clear")
-        assertEquals(avlTree.getRootAvl(), null, "Root of the tree must be null after clear")
+        assertEquals(avlTree.root, null, "Root of the tree must be null after clear")
     }
 
     @Test
@@ -233,16 +236,18 @@ class AvlGeneralTest {
 
         for (key in keys) {
             assertEquals(
-                avlTree.containsKey(key), true,
-                "containsKey must return true for keys existing in the tree"
+                avlTree.containsKey(key),
+                true,
+                "containsKey must return true for keys existing in the tree",
             )
         }
         avlTree.remove(-34)
         val keysNotInTheTree = intArrayOf(102, 57, -22, -34)
         for (key in keysNotInTheTree) {
             assertEquals(
-                avlTree.containsKey(key), false,
-                "containsKey must return false for keys not existing in the tree"
+                avlTree.containsKey(key),
+                false,
+                "containsKey must return false for keys not existing in the tree",
             )
         }
     }
@@ -259,7 +264,6 @@ class AvlGeneralTest {
         avlTree.clear()
 
         assertEquals(avlTree.isNotEmpty(), false, "isNotEmpty must return false if tree is empty")
-
     }
 
     @Test
@@ -284,8 +288,7 @@ class AvlGeneralTest {
         val actualResult = avlTree.max()
 
         assertEquals(expectedResult, actualResult, "Max must return Pair<K,V>s by max key in the tree")
-        checkTreeInvariant(avlTree.getRootAvl())
-
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -298,7 +301,7 @@ class AvlGeneralTest {
         val actualResult = avlTree.max()
 
         assertEquals(expectedResult, actualResult, "Max must return Pair<K,V> by max key in the tree")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -306,13 +309,10 @@ class AvlGeneralTest {
         val keys = intArrayOf(54, 88, 4332, -46, -2)
         for (key in keys) avlTree[key] = key
 
-
         val expectedResult = Pair(-46, -46)
         val actualResult = avlTree.min()
         assertEquals(expectedResult, actualResult, "Min must return Pair<K,V> by min key in the tree")
-        checkTreeInvariant(avlTree.getRootAvl())
-
-
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -325,7 +325,7 @@ class AvlGeneralTest {
         val actualResult = avlTree.min()
 
         assertEquals(expectedResult, actualResult, "Min must return Pair<K,V> by min key in the tree")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -335,20 +335,23 @@ class AvlGeneralTest {
         val expectedResult = -48
         val actualResult = avlTree.getOrSet(25, 90)
         assertEquals(
-            expectedResult, actualResult,
-            "getOrSet must return value corresponding to the specified key if it's presented in the tree"
+            expectedResult,
+            actualResult,
+            "getOrSet must return value corresponding to the specified key if it's presented in the tree",
         )
     }
 
     @Test
     fun `getOrSet with non existing key`() {
         assertEquals(
-            avlTree.getOrSet(0, -10500), null,
-            "getOrSet must return null if key is not presented in the tree"
+            avlTree.getOrSet(0, -10500),
+            null,
+            "getOrSet must return null if key is not presented in the tree",
         )
         assertEquals(
-            avlTree[0], -10500,
-            "getOrSet must set specified key-value if key was not presented in the tree"
+            avlTree[0],
+            -10500,
+            "getOrSet must set specified key-value if key was not presented in the tree",
         )
     }
 
@@ -359,8 +362,9 @@ class AvlGeneralTest {
         val expectedResult = 45
         val actualResult = avlTree.getOrDefault(45, "Default")
         assertEquals(
-            expectedResult, actualResult,
-            "getOrDefault must return value corresponding to the specified key if it's presented in the tree"
+            expectedResult,
+            actualResult,
+            "getOrDefault must return value corresponding to the specified key if it's presented in the tree",
         )
     }
 
@@ -369,8 +373,9 @@ class AvlGeneralTest {
         val expectedResult = "Default"
         val actualResult = avlTree.getOrDefault(100, "Default")
         assertEquals(
-            expectedResult, actualResult,
-            "getOrDefault must return defaultValue if key is not presented in the tree"
+            expectedResult,
+            actualResult,
+            "getOrDefault must return defaultValue if key is not presented in the tree",
         )
     }
 
@@ -382,8 +387,9 @@ class AvlGeneralTest {
         val expectedResult = 520
         val actualResult = avlTree[520]
         assertEquals(
-            expectedResult, actualResult,
-            "setIfAbsent must not change value if key is presented in the tree"
+            expectedResult,
+            actualResult,
+            "setIfAbsent must not change value if key is presented in the tree",
         )
     }
 
@@ -394,8 +400,9 @@ class AvlGeneralTest {
         val expectedResult = 250
         val actualResult = avlTree[-100]
         assertEquals(
-            expectedResult, actualResult,
-            "setIfAbsent must set specified value under specified key if key was not presented in the tree"
+            expectedResult,
+            actualResult,
+            "setIfAbsent must set specified value under specified key if key was not presented in the tree",
         )
     }
 }
