@@ -121,7 +121,6 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTree<K, V, RBVertex<K, V>>() {
             vertex.key = mVertex.key
             replacedVertex = deleteNullChild(mVertex)
             deletedVertexColor = mVertex.color
-
         }
 
         if (deletedVertexColor == black) {
@@ -172,7 +171,6 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTree<K, V, RBVertex<K, V>>() {
             brother.color = red
             rotateLeft(brother)
             brother = vertex?.parent?.right
-
         } else if (!isParent && brother?.left?.color == black) {
             brother.right?.color = black
             brother.color = red
@@ -228,7 +226,6 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTree<K, V, RBVertex<K, V>>() {
             return newChild
         }
     }
-
 
     private fun getVertexUncle(parent: RBVertex<K, V>): RBVertex<K, V>? {
         val grandparent = parent.parent

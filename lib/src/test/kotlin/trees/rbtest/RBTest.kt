@@ -107,7 +107,6 @@ class RBTest {
 
     @Test
     fun `not simple array set remove test`() {
-
         for (i in 19 downTo 0) {
             rbTree[19 - i] = i
         }

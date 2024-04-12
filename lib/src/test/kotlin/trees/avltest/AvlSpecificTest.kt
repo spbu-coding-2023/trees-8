@@ -1,10 +1,10 @@
 package trees.avltest
 
-import trees.implementations.AvlTree
-import trees.implementations.AVLVertex
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import trees.implementations.AVLVertex
+import trees.implementations.AvlTree
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 

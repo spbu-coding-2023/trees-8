@@ -21,7 +21,9 @@ class SimpleTree<K : Comparable<K>, V> : BSTree<K, V, SimpleVertex<K, V>>() {
         } else {
             val successor = if (vertex.right == null) {
                 maxVertex(vertex.left)
-            } else minVertex(vertex.right)
+            } else {
+                minVertex(vertex.right)
+            }
             val successorParent = successor?.parent
             successor?.let {
                 vertex.key = it.key
