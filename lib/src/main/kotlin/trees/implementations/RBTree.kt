@@ -1,8 +1,8 @@
 package trees.implementations
 
-import trees.templates.BalanceBSTreeTemplate
+import trees.abstracts.BalanceBSTree
 
-class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>() {
+class RBTree<K : Comparable<K>, V> : BalanceBSTree<K, V, RBVertex<K, V>>() {
 
     override fun createVertex(key: K, value: V): RBVertex<K, V> {
         return RBVertex(key, value)

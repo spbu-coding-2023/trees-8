@@ -1,8 +1,8 @@
 package trees.implementations
 
-import trees.templates.BalanceBSTreeTemplate
+import trees.abstracts.BalanceBSTree
 
-class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
+class AvlTree<K : Comparable<K>, V> : BalanceBSTree<K, V, AVLVertex<K, V>>() {
     override operator fun set(key: K, value: V): V? {
         val (currentVert, oldValue) = setWithoutBalance(key, value)
         if (oldValue == null) {

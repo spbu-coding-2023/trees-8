@@ -1,8 +1,8 @@
 package trees.implementations
 
-import trees.templates.BSTreeTemplate
+import trees.abstracts.BSTree
 
-class SimpleTree<K : Comparable<K>, V> : BSTreeTemplate<K, V, SimpleVertex<K, V>>() {
+class SimpleTree<K : Comparable<K>, V> : BSTree<K, V, SimpleVertex<K, V>>() {
 
     override fun createVertex(key: K, value: V): SimpleVertex<K, V> {
         return SimpleVertex(key, value)
