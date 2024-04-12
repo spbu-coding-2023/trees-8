@@ -10,11 +10,11 @@ import trees.avltest.AvlSpecificTest.Companion.checkTreeInvariant
 import kotlin.test.assertIs
 
 class AvlGeneralTest {
-    private lateinit var avlTree: AvlTestTree<Int, Int>
+    private lateinit var avlTree: AvlTree<Int,Int>
 
     @BeforeEach
     fun setup() {
-        avlTree = AvlTestTree()
+        avlTree = AvlTree()
     }
 
     @Test
@@ -29,7 +29,7 @@ class AvlGeneralTest {
         val expectedSize = 5
         val actualSize = avlTree.size
         assertEquals(expectedSize, actualSize, "Size the tree must correspond to the number key-value pairs")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -48,7 +48,7 @@ class AvlGeneralTest {
             actualSize,
             "Size of the tree must not change after overwriting an existing key",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -67,7 +67,7 @@ class AvlGeneralTest {
             actualSize,
             "Size of the tree must not change after overwriting an existing key",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -131,7 +131,7 @@ class AvlGeneralTest {
             actualResult,
             "Tree must save all other vertices after remove vertex with existing left vertex",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -147,7 +147,7 @@ class AvlGeneralTest {
             actualResult,
             "Tree must save all other vertices after remove root of right subtree with existing left vertex",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -163,7 +163,7 @@ class AvlGeneralTest {
             actualResult,
             "Tree must save all other vertices after remove vertex with right subtree of height 1",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -179,9 +179,9 @@ class AvlGeneralTest {
             actualResult,
             "Tree must save all other vertices after remove vertex with right subtree of height >1",
         )
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
         avlTree[5] = 5
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -196,7 +196,7 @@ class AvlGeneralTest {
         val iterator = avlTree.iterator()
         val actualResult: Array<Int?> = Array(7, { iterator.next().second })
         assertContentEquals(expectedResult, actualResult, "Iterator must return vertices in keys order")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -223,7 +223,7 @@ class AvlGeneralTest {
         avlTree.clear()
 
         assertEquals(avlTree.size, 0, "Size of the tree must be 0 after clear")
-        assertEquals(avlTree.getRootAvl(), null, "Root of the tree must be null after clear")
+        assertEquals(avlTree.root, null, "Root of the tree must be null after clear")
     }
 
     @Test
@@ -284,7 +284,7 @@ class AvlGeneralTest {
         val actualResult = avlTree.max()
 
         assertEquals(expectedResult, actualResult, "Max must return Pair<K,V>s by max key in the tree")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
 
     }
 
@@ -298,7 +298,7 @@ class AvlGeneralTest {
         val actualResult = avlTree.max()
 
         assertEquals(expectedResult, actualResult, "Max must return Pair<K,V> by max key in the tree")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test
@@ -310,7 +310,7 @@ class AvlGeneralTest {
         val expectedResult = Pair(-46, -46)
         val actualResult = avlTree.min()
         assertEquals(expectedResult, actualResult, "Min must return Pair<K,V> by min key in the tree")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
 
 
     }
@@ -325,7 +325,7 @@ class AvlGeneralTest {
         val actualResult = avlTree.min()
 
         assertEquals(expectedResult, actualResult, "Min must return Pair<K,V> by min key in the tree")
-        checkTreeInvariant(avlTree.getRootAvl())
+        checkTreeInvariant(avlTree.root)
     }
 
     @Test

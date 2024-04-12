@@ -3,7 +3,7 @@ package trees.templates
 import java.util.Stack
 
 abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K, V, Vertex_t>> {
-    protected var root: Vertex_t? = null
+    internal var root: Vertex_t? = null
     var size: Int = 0
         protected set(value) {
             if (value >= 0) {

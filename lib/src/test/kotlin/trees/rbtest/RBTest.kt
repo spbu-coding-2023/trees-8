@@ -8,11 +8,11 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class RBTest {
-    private lateinit var rbTree: RBTestTree<Int, Int>
+    private lateinit var rbTree: RBTree<Int, Int>
 
     @BeforeEach
     fun setup() {
-        rbTree = RBTestTree()
+        rbTree = RBTree()
     }
 
     @Test
@@ -178,7 +178,7 @@ class RBTest {
         val keys = intArrayOf(4, 1, 6, 0, 3, 5, 2)
         for (key in keys) rbTree[key] = key
         rbTree.remove(4)
-        Assertions.assertTrue(rbTree.getRootRB() != null)
+        Assertions.assertTrue(rbTree.root != null)
         val expectedResult = arrayOf(null, 1, 6, 0, 3, 5, 2)
         val actualResult = Array(keys.size) { i -> rbTree[keys[i]] }
         assertContentEquals(
