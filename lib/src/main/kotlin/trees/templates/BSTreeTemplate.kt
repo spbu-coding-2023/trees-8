@@ -20,7 +20,7 @@ abstract class BSTreeTemplate<K : Comparable<K>, V, Vertex_t : VertexTemplate<K,
      */
     abstract operator fun set(key: K, value: V): V?
 
-    abstract protected fun createVertex(key: K, value: V): Vertex_t
+    protected abstract fun createVertex(key: K, value: V): Vertex_t
 
     /**
      * Set specified value by specified key

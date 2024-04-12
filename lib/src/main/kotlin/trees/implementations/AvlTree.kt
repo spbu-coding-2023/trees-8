@@ -22,9 +22,8 @@ class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V
      */
     private fun balanceAfterSet(vertex: AVLVertex<K, V>) {
         var cur = vertex
-        var prevKey = cur.key
         while (cur.parent != null) {
-            prevKey = cur.key
+            val prevKey = cur.key
             cur = cur.parent ?: throw IllegalStateException("Parent can't be null due to while condition")
             if (prevKey == cur.left?.key) {
                 cur.diffHeight += 1

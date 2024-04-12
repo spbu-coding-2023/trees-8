@@ -157,12 +157,10 @@ class RBTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, RBVertex<K, V>>
 
     private fun getBrother(vertex: RBVertex<K, V>?): RBVertex<K, V>? {
         val parent = vertex?.parent
-        return if (vertex == parent?.left) {
-            parent?.right
-        } else if (vertex == parent?.right) {
-            parent?.left
-        } else {
-            throw IllegalStateException()
+        return when (vertex) {
+            parent?.left -> parent?.right
+            parent?.right -> parent?.left
+            else -> throw IllegalStateException()
         }
     }
 

@@ -23,8 +23,8 @@ class AvlGeneralTest {
         for (i in array) {
             avlTree[i] = -i
         }
-        val expectedGet: Array<Int?> = Array(5, { i -> -i })
-        val actualGet: Array<Int?> = Array(5, { i -> avlTree[i] })
+        val expectedGet: Array<Int?> = Array(5) { i -> -i }
+        val actualGet: Array<Int?> = Array(5) { i -> avlTree[i] }
         assertContentEquals(expectedGet, actualGet, "Get method must return the value associated with the key")
         val expectedSize = 5
         val actualSize = avlTree.size
@@ -125,7 +125,7 @@ class AvlGeneralTest {
         avlTree.remove(-1)
 
         val expectedResult = arrayOf(0, null, 1, -2)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -141,7 +141,7 @@ class AvlGeneralTest {
         avlTree.remove(2)
 
         val expectedResult = arrayOf(0, -1, null, 1)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -157,7 +157,7 @@ class AvlGeneralTest {
         avlTree.remove(3)
 
         val expectedResult = arrayOf(0, -1, null, 1, 2)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -173,7 +173,7 @@ class AvlGeneralTest {
         avlTree.remove(3)
 
         val expectedResult = arrayOf(0, -1, null, -2, 1, 6, 4, 7)
-        val actualResult = Array(keys.size, { i -> avlTree[keys[i]] })
+        val actualResult = Array(keys.size) { i -> avlTree[keys[i]] }
         assertContentEquals(
             expectedResult,
             actualResult,
@@ -194,7 +194,7 @@ class AvlGeneralTest {
 
         val expectedResult: Array<Int?> = arrayOf(-34, 19, 12, 0, 31, 14, 17)
         val iterator = avlTree.iterator()
-        val actualResult: Array<Int?> = Array(7, { iterator.next().second })
+        val actualResult: Array<Int?> = Array(7) { iterator.next().second }
         assertContentEquals(expectedResult, actualResult, "Iterator must return vertices in keys order")
         checkTreeInvariant(avlTree.root)
     }
