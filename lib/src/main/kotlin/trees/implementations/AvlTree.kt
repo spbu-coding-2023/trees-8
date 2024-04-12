@@ -4,7 +4,7 @@ import trees.templates.BalanceBSTreeTemplate
 
 open class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex<K, V>>() {
     override operator fun set(key: K, value: V): V? {
-        val (currentVert, oldValue) = setWithoutBalance(key, value, ::fabricVertex)
+        val (currentVert, oldValue) = setWithoutBalance(key, value)
         if (oldValue == null) {
             size += 1
             balanceAfterSet(currentVert)
@@ -12,7 +12,7 @@ open class AvlTree<K : Comparable<K>, V> : BalanceBSTreeTemplate<K, V, AVLVertex
         return oldValue
     }
 
-    override fun fabricVertex(key: K, value: V): AVLVertex<K, V> {
+    override fun createVertex(key: K, value: V): AVLVertex<K, V> {
         return AVLVertex(key, value)
     }
 
