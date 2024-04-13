@@ -3,7 +3,7 @@ name: Build & Test
 on:
   push:
 jobs:
-  CITest:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
