@@ -7,22 +7,7 @@
 # Binary Trees Project
 
 Team #8's project on binary trees.
-
-## About
-
 Three trees are implemented in this library: [Red-Black](https://en.wikipedia.org/wiki/Red–black_tree), [AVL](https://en.wikipedia.org/wiki/AVL_tree) and [Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree).
-
-## Authors
-
-- [Aleksey Dmitrievtsev](https://github.com/admitrievtsev) - Red-Black Tree
-- [Gleb Nasretdinov](https://github.com/Ycyken) - AVL Tree
-- [Azamat Ishbaev](https://github.com/odiumuniverse) - Binary Search Tree
-
-## Technologies
-
-- Kotlin 1.9.22
-- JDK 17
-- [Gradle 8.6](https://gradle.org)
 
 ## Library information
 
@@ -51,6 +36,18 @@ AVL and Red-Black trees are self-balancing
 ### Suggestions and wishes
 
 Suggestions can be made in code review or [Issues](https://github.com/spbu-coding-2023/trees-8/issues) on GitHub
+
+## Authors
+- [Aleksey Dmitrievtsev](https://github.com/admitrievtsev) - Red-Black Tree
+- [Gleb Nasretdinov](https://github.com/Ycyken) - AVL Tree
+- [Azamat Ishbaev](https://github.com/odiumuniverse) - Binary Search Tree
+
+## Technologies
+
+- Kotlin 1.9.22
+- JDK 17
+- [Gradle 8.6](https://gradle.org)
+
 
 ### Licence
 
